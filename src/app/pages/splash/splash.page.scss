@@ -1,0 +1,11 @@
+.splash-wrap { position: relative; min-height: 100%; display: flex; flex-direction: column; justify-content: center; padding: calc(40px + var(--ion-safe-area-top)) 28px calc(28px + var(--ion-safe-area-bottom)); overflow: hidden; }
+.splash-brand { position: relative; z-index: 1; text-align: center; margin-top: auto; }
+.splash-brand app-logo { display: inline-block; }
+.splash-brand h1 { margin: 18px 0 5px; font-size: 2.2rem; letter-spacing: -.07em; }
+.splash-brand h1 span { color: var(--ion-color-primary); }
+.splash-brand p { margin: 0; color: #8392a8; font-size: .8rem; letter-spacing: .04em; }
+.splash-footer { position: relative; z-index: 1; margin-top: auto; text-align: center; }
+.splash-footer small { display: block; margin-top: 17px; color: #536176; font-size: .65rem; }
+.ambient { position: absolute; width: 320px; height: 320px; border-radius: 50%; filter: blur(80px); opacity: .22; }
+.ambient.one { background: #3a66ff; top: 5%; left: -55%; }
+.ambient.two { background: #8f3dff; bottom: -2%; right: -60%; }

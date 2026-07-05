@@ -1,0 +1,7 @@
+import { Component } from '@angular/core';
+import { IonContent, IonIcon } from '@ionic/angular/standalone';
+import { AppHeaderComponent, PrimaryButtonComponent, SecondaryButtonComponent } from '../../shared/components/ui-kit.components';
+
+@Component({ selector: 'app-quiz-result', standalone: true, imports: [IonContent, IonIcon, AppHeaderComponent, PrimaryButtonComponent, SecondaryButtonComponent], styleUrls: ['../pages.scss'], template: `
+<app-header [showBack]="true" backLink="/documents/subnetting"></app-header><ion-content class="nexus-content"><div class="result-score"><div class="result-icon"><ion-icon name="trophy"></ion-icon></div><h1>¡Gran trabajo!</h1><p>Has completado Subnetting esencial</p><div class="progress-ring"><strong>8/10</strong></div><span class="eyebrow">80% de precisión</span></div><div class="metric-grid"><div class="metric"><ion-icon name="checkmark-circle-outline"></ion-icon><strong>8</strong><span>Correctas</span></div><div class="metric"><ion-icon name="time-outline"></ion-icon><strong>08:34</strong><span>Tiempo total</span></div></div><div class="section-heading"><h2>Recomendación de Nexus</h2></div><div class="summary-block nexus-card"><p>Dominas los conceptos base. Repasa VLSM y cálculo de hosts antes de volver a intentarlo.</p></div><app-primary-button icon="refresh-outline" routerLink="/quiz">Intentar de nuevo</app-primary-button><div style="height:10px"></div><app-secondary-button routerLink="/dashboard">Volver al inicio</app-secondary-button></ion-content>` })
+export class QuizResultPage {}

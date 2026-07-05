@@ -1,0 +1,7 @@
+import { Component } from '@angular/core';
+import { IonContent, IonIcon, IonProgressBar } from '@ionic/angular/standalone';
+import { AppHeaderComponent, PrimaryButtonComponent } from '../../shared/components/ui-kit.components';
+
+@Component({ selector: 'app-quiz', standalone: true, imports: [IonContent, IonIcon, IonProgressBar, AppHeaderComponent, PrimaryButtonComponent], styleUrls: ['../pages.scss'], template: `
+<app-header [showBack]="true" backLink="/quiz-generator"></app-header><ion-content class="nexus-content"><ion-progress-bar class="quiz-progress" value="0.4"></ion-progress-bar><div class="quiz-meta"><span>Pregunta 4 de 10</span><span>06:42</span></div><span class="eyebrow">Redes / Subnetting</span><h1 class="page-title">¿Cuál es el modelo de referencia utilizado para describir las funciones de un sistema de telecomunicaciones o de red?</h1><p class="page-subtitle">Selecciona una respuesta.</p><button class="option-card"><span class="letter">A</span>Modelo TCP/IP</button><button class="option-card selected"><span class="letter">B</span>Modelo OSI</button><button class="option-card"><span class="letter">C</span>Modelo IEEE 802</button><button class="option-card"><span class="letter">D</span>Modelo ARPANET</button><div style="height:16px"></div><app-primary-button routerLink="/quiz-result">Siguiente pregunta <ion-icon name="arrow-forward" slot="end"></ion-icon></app-primary-button></ion-content>` })
+export class QuizPage {}
