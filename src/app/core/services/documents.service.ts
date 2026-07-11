@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { SupabaseService } from './supabase.service';
 
+import * as pdfjsLib from 'pdfjs-dist';
+
 export interface DocumentDB {
   id: string;
   user_id: string;
@@ -106,25 +108,26 @@ export class DocumentsService {
     subjectId: string,
     title: string,
     description: string,
-    documentType: string,
+    _uiDocumentType: string,
     file: File
   ): Promise<DocumentDB> {
     const user = this.supabase.currentUser;
     if (!user) throw new Error('Usuario no autenticado');
 
-    // 1. Crear el registro inicial en la base de datos
-    const document = await this.createDocument(workspaceId, subjectId, title, description, documentType);
+    const calculatedType = this.getDocumentTypeFromFile(file);
+
+    // 1. Crear el registro inicial
+    const document = await this.createDocument(workspaceId, subjectId, title, description, calculatedType);
 
     const filePath = `${user.id}/${document.id}/${file.name}`;
 
-    // 2. Subir el archivo al bucket
+    // 2. Subir a Storage
     const { data: uploadData, error: uploadError } = await this.supabase.client.storage
       .from('nexus-documents')
       .upload(filePath, file, {
         upsert: true
       });
 
-    // 3. Manejar error de subida
     if (uploadError) {
       await this.updateDocument(document.id, {
         status: 'failed',
@@ -133,8 +136,8 @@ export class DocumentsService {
       throw new Error(`Error al subir el archivo: ${uploadError.message}`);
     }
 
-    // 4. Actualizar registro con la metadata del archivo si todo fue bien
-    const updatedDocument = await this.updateDocument(document.id, {
+    // 3. Actualizar registro como subido
+    let updatedDocument = await this.updateDocument(document.id, {
       file_name: file.name,
       file_path: filePath,
       file_mime: file.type,
@@ -142,6 +145,101 @@ export class DocumentsService {
       status: 'uploaded'
     });
 
+    // 4. Procesar si es PDF
+    if (file.type === 'application/pdf') {
+      try {
+        await this.updateDocument(document.id, { status: 'processing' });
+        
+        const extractedText = await this.extractPdfText(file);
+        if (!extractedText || extractedText.trim() === '') {
+          throw new Error('El PDF no contiene texto extraíble.');
+        }
+
+        const chunks = this.splitTextIntoChunks(extractedText, 1000);
+        
+        // Borrar chunks anteriores (por seguridad)
+        await this.supabase.client
+          .from('document_chunks')
+          .delete()
+          .eq('document_id', document.id);
+          
+        // Insertar nuevos chunks
+        const chunksToInsert = chunks.map((content, index) => ({
+          user_id: user.id,
+          document_id: document.id,
+          chunk_index: index,
+          content: content,
+          token_count: Math.round(content.length / 4) // Estimación rápida
+        }));
+
+        const { error: chunkError } = await this.supabase.client
+          .from('document_chunks')
+          .insert(chunksToInsert);
+
+        if (chunkError) throw chunkError;
+
+        updatedDocument = await this.updateDocument(document.id, { status: 'ready', error_message: '' });
+      } catch (procError: any) {
+        console.error('Error processing PDF:', procError);
+        updatedDocument = await this.updateDocument(document.id, { 
+          status: 'failed', 
+          error_message: procError.message || 'Error procesando el PDF' 
+        });
+      }
+    } else {
+      // Si no es PDF, lo dejamos como ready directamente
+      updatedDocument = await this.updateDocument(document.id, { status: 'ready' });
+    }
+
     return updatedDocument;
+  }
+
+  private async extractPdfText(file: File): Promise<string> {
+    const arrayBuffer = await file.arrayBuffer();
+    
+    // Configurar worker. Fallback a unpkg si falla la red o versión
+    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
+    
+    const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+    const pdf = await loadingTask.promise;
+    
+    let fullText = '';
+    
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const textContent = await page.getTextContent();
+      const pageText = textContent.items.map((item: any) => item.str).join(' ');
+      fullText += pageText + '\n';
+    }
+    
+    return fullText;
+  }
+
+  private splitTextIntoChunks(text: string, chunkSize = 1000): string[] {
+    const words = text.split(/\s+/);
+    const chunks: string[] = [];
+    let currentChunk: string[] = [];
+    let currentLength = 0;
+
+    for (const word of words) {
+      if (currentLength + word.length > chunkSize && currentChunk.length > 0) {
+        chunks.push(currentChunk.join(' '));
+        currentChunk = [];
+        currentLength = 0;
+      }
+      currentChunk.push(word);
+      currentLength += word.length + 1;
+    }
+    if (currentChunk.length > 0) {
+      chunks.push(currentChunk.join(' '));
+    }
+    return chunks;
+  }
+
+  private getDocumentTypeFromFile(file: File): DocumentDB['document_type'] {
+    if (file.type === 'application/pdf') return 'pdf';
+    if (file.type.startsWith('image/')) return 'image';
+    if (file.type === 'text/plain') return 'text';
+    return 'other';
   }
 }

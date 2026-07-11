@@ -224,11 +224,16 @@ export class SubjectDetailPage implements OnInit {
     if (dbDoc.document_type === 'text') docType = 'DOCX';
     if (dbDoc.document_type === 'image') docType = 'PPTX'; // Using available UI types as fallback
     
+    let metaText = 'Subido';
+    if (dbDoc.status === 'processing') metaText = 'Procesando...';
+    else if (dbDoc.status === 'ready') metaText = 'Listo';
+    else if (dbDoc.status === 'failed') metaText = 'Error';
+
     return {
       id: dbDoc.id,
       title: dbDoc.title,
       type: docType as any,
-      meta: dbDoc.status === 'uploaded' ? 'Subido' : 'Procesado',
+      meta: metaText,
       subject: this.subject?.name || 'General',
       color: this.subject?.color || '#25d7ff'
     };
@@ -289,8 +294,15 @@ export class SubjectDetailPage implements OnInit {
         this.newType,
         this.selectedFile
       );
+      
       this.documents.unshift(this.mapDocument(newDocDb));
-      this.closeModal();
+      
+      if (newDocDb.status === 'failed') {
+        this.errorMsg = newDocDb.error_message || 'El archivo se subió pero hubo un problema al procesarlo.';
+        // No cerramos el modal para que el usuario vea el mensaje
+      } else {
+        this.closeModal();
+      }
     } catch (error: any) {
       console.error('Error uploading document', error);
       this.errorMsg = error.message || 'Error al subir el documento';
