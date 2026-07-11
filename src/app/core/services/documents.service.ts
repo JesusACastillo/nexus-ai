@@ -208,8 +208,32 @@ export class DocumentsService {
           error_message: procError.message || 'Error procesando el documento' 
         });
       }
+    } else if (file.type.startsWith('image/')) {
+      try {
+        await this.updateDocument(document.id, { status: 'processing' });
+        
+        const { error: invokeError } = await this.supabase.client.functions.invoke('extract-image-text', {
+          body: { document_id: document.id }
+        });
+
+        if (invokeError) throw invokeError;
+        
+        const { data: finalDoc } = await this.supabase.client
+          .from('documents')
+          .select('*')
+          .eq('id', document.id)
+          .single();
+          
+        if (finalDoc) updatedDocument = finalDoc;
+      } catch (procError: any) {
+        console.error('Error procesando imagen:', procError);
+        updatedDocument = await this.updateDocument(document.id, { 
+          status: 'failed', 
+          error_message: procError.message || 'Error procesando la imagen' 
+        });
+      }
     } else {
-      // Si no es un formato procesable, lo dejamos como ready directamente (ej. imágenes)
+      // Si no es un formato procesable, lo dejamos como ready directamente
       updatedDocument = await this.updateDocument(document.id, { status: 'ready' });
     }
 
