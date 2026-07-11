@@ -100,4 +100,48 @@ export class DocumentsService {
 
     if (error) throw error;
   }
+
+  async uploadDocumentFile(
+    workspaceId: string,
+    subjectId: string,
+    title: string,
+    description: string,
+    documentType: string,
+    file: File
+  ): Promise<DocumentDB> {
+    const user = this.supabase.currentUser;
+    if (!user) throw new Error('Usuario no autenticado');
+
+    // 1. Crear el registro inicial en la base de datos
+    const document = await this.createDocument(workspaceId, subjectId, title, description, documentType);
+
+    const filePath = `${user.id}/${document.id}/${file.name}`;
+
+    // 2. Subir el archivo al bucket
+    const { data: uploadData, error: uploadError } = await this.supabase.client.storage
+      .from('nexus-documents')
+      .upload(filePath, file, {
+        upsert: true
+      });
+
+    // 3. Manejar error de subida
+    if (uploadError) {
+      await this.updateDocument(document.id, {
+        status: 'failed',
+        error_message: uploadError.message
+      });
+      throw new Error(`Error al subir el archivo: ${uploadError.message}`);
+    }
+
+    // 4. Actualizar registro con la metadata del archivo si todo fue bien
+    const updatedDocument = await this.updateDocument(document.id, {
+      file_name: file.name,
+      file_path: filePath,
+      file_mime: file.type,
+      file_size_bytes: file.size,
+      status: 'uploaded'
+    });
+
+    return updatedDocument;
+  }
 }

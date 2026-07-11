@@ -125,12 +125,23 @@ import { DocumentDB, DocumentsService } from '../../core/services/documents.serv
             </ion-select>
           </ion-item>
 
+          <div class="file-picker-container" style="margin-bottom: 24px;">
+            <input type="file" id="file-upload" (change)="onFileSelected($event)" accept=".pdf,image/png,image/jpeg,image/webp,text/plain" style="display: none;">
+            <label for="file-upload" class="nexus-input" style="display: flex; align-items: center; padding: 16px; background: var(--nexus-card-bg); border-radius: 12px; border: 1px dashed var(--nexus-border); cursor: pointer; color: var(--nexus-muted);">
+              <ion-icon name="cloud-upload-outline" style="font-size: 1.5rem; margin-right: 12px;"></ion-icon>
+              <div style="flex: 1;">
+                <div style="color: #f0f4ff; font-weight: 500; margin-bottom: 4px;">{{ selectedFile ? selectedFile.name : 'Seleccionar archivo' }}</div>
+                <div style="font-size: 0.8rem;">PDF, PNG, JPG, WEBP, TXT</div>
+              </div>
+            </label>
+          </div>
+
           @if (errorMsg) {
             <div class="auth-error">{{ errorMsg }}</div>
           }
 
           <app-primary-button (click)="createDocument()">
-            @if (creating) { Guardando... } @else { Guardar Documento }
+            @if (creating) { Subiendo... } @else { Subir Documento }
           </app-primary-button>
         </div>
       </ion-content>
@@ -158,6 +169,7 @@ export class SubjectDetailPage implements OnInit {
   newDesc = '';
   newType = 'pdf';
   errorMsg = '';
+  selectedFile: File | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -222,11 +234,29 @@ export class SubjectDetailPage implements OnInit {
     };
   }
 
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const validTypes = ['application/pdf', 'image/png', 'image/jpeg', 'image/webp', 'text/plain'];
+      if (!validTypes.includes(file.type)) {
+        this.errorMsg = 'Tipo de archivo no permitido. Selecciona un PDF, imagen o texto plano.';
+        this.selectedFile = null;
+        return;
+      }
+      this.selectedFile = file;
+      if (!this.newTitle) {
+        this.newTitle = file.name;
+      }
+      this.errorMsg = '';
+    }
+  }
+
   openModal() {
     this.newTitle = '';
     this.newDesc = '';
     this.newType = 'pdf';
     this.errorMsg = '';
+    this.selectedFile = null;
     this.isModalOpen = true;
   }
 
@@ -239,6 +269,11 @@ export class SubjectDetailPage implements OnInit {
       this.errorMsg = 'El título es obligatorio.';
       return;
     }
+
+    if (!this.selectedFile) {
+      this.errorMsg = 'Debes seleccionar un archivo.';
+      return;
+    }
     
     if (!this.subject) return;
 
@@ -246,18 +281,19 @@ export class SubjectDetailPage implements OnInit {
     this.errorMsg = '';
 
     try {
-      const newDocDb = await this.documentsService.createDocument(
+      const newDocDb = await this.documentsService.uploadDocumentFile(
         this.subject.workspace_id,
         this.subject.id,
         this.newTitle.trim(),
         this.newDesc.trim(),
-        this.newType
+        this.newType,
+        this.selectedFile
       );
       this.documents.unshift(this.mapDocument(newDocDb));
       this.closeModal();
     } catch (error: any) {
-      console.error('Error creating document', error);
-      this.errorMsg = error.message || 'Error al crear documento';
+      console.error('Error uploading document', error);
+      this.errorMsg = error.message || 'Error al subir el documento';
     } finally {
       this.creating = false;
     }
