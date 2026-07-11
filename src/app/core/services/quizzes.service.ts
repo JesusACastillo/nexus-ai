@@ -24,11 +24,54 @@ export interface QuizQuestionDB {
   created_at: string;
 }
 
+export interface QuizAttemptResult {
+  attempt_id: string;
+  score: number;
+  correct_answers: number;
+  total_questions: number;
+}
+
+export interface GradedAnswer {
+  question_id: string;
+  selected_answer: string;
+  is_correct: boolean;
+  correct_answer: string;
+  explanation: string;
+}
+
+export interface SubmitQuizResponse {
+  success: boolean;
+  result: QuizAttemptResult;
+  graded_answers: GradedAnswer[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class QuizzesService {
   constructor(private supabase: SupabaseService) {}
+
+  async submitQuiz(quizId: string, answers: { question_id: string, selected_answer: string }[]): Promise<SubmitQuizResponse> {
+    const user = this.supabase.currentUser;
+    if (!user) throw new Error('Usuario no autenticado');
+
+    const { data, error } = await this.supabase.client.functions.invoke('submit-quiz', {
+      body: { 
+        quiz_id: quizId,
+        answers
+      }
+    });
+
+    if (error) {
+      throw new Error(error.message || 'Error al enviar el quiz');
+    }
+
+    if (data && data.error) {
+      throw new Error(data.error);
+    }
+
+    return data;
+  }
 
   async generateQuiz(documentId: string, difficulty: string = 'medium', totalQuestions: number = 5): Promise<{ quiz: QuizDB, questions: QuizQuestionDB[] }> {
     const user = this.supabase.currentUser;
