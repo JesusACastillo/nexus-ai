@@ -1,11 +1,74 @@
-.splash-wrap { position: relative; min-height: 100%; display: flex; flex-direction: column; justify-content: center; padding: calc(40px + var(--ion-safe-area-top)) 28px calc(28px + var(--ion-safe-area-bottom)); overflow: hidden; }
-.splash-brand { position: relative; z-index: 1; text-align: center; margin-top: auto; }
-.splash-brand app-logo { display: inline-block; }
-.splash-brand h1 { margin: 18px 0 5px; font-size: 2.2rem; letter-spacing: -.07em; }
-.splash-brand h1 span { color: var(--ion-color-primary); }
-.splash-brand p { margin: 0; color: #8392a8; font-size: .8rem; letter-spacing: .04em; }
-.splash-footer { position: relative; z-index: 1; margin-top: auto; text-align: center; }
-.splash-footer small { display: block; margin-top: 17px; color: #536176; font-size: .65rem; }
-.ambient { position: absolute; width: 320px; height: 320px; border-radius: 50%; filter: blur(80px); opacity: .22; }
-.ambient.one { background: #3a66ff; top: 5%; left: -55%; }
-.ambient.two { background: #8f3dff; bottom: -2%; right: -60%; }
+:host ion-content { --background: var(--nexus-bg); }
+
+.splash-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  gap: 0;
+  padding: var(--ion-safe-area-top) 24px var(--ion-safe-area-bottom);
+  text-align: center;
+}
+
+/* Circular logo orb (Figma: gradient circle with brain icon) */
+.splash-orb {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 35% 30%, rgba(168,85,247,.55) 0%, rgba(108,99,255,.3) 40%, rgba(0,212,255,.1) 80%, transparent 100%),
+              linear-gradient(145deg, #1a1240, #0b2040);
+  border: 1.5px solid rgba(255,255,255,.12);
+  box-shadow:
+    0 0 60px rgba(108,99,255,.28),
+    0 0 120px rgba(0,212,255,.10),
+    inset 0 0 30px rgba(168,85,247,.1);
+  margin-bottom: 28px;
+  animation: orb-pulse 3s ease-in-out infinite;
+}
+
+@keyframes orb-pulse {
+  0%, 100% { box-shadow: 0 0 60px rgba(108,99,255,.28), 0 0 120px rgba(0,212,255,.10); }
+  50%       { box-shadow: 0 0 90px rgba(108,99,255,.40), 0 0 160px rgba(0,212,255,.18); }
+}
+
+/* "N" letter inside (Figma: brain icon, we use letter) */
+.splash-n {
+  font-size: 3.2rem;
+  font-weight: 800;
+  letter-spacing: -.06em;
+  color: rgba(255,255,255,.9);
+  text-shadow: 0 0 20px rgba(0,212,255,.5);
+}
+
+.splash-title {
+  margin: 0 0 8px;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -.05em;
+  color: #f0f4ff;
+}
+.splash-sub {
+  margin: 0 0 40px;
+  color: var(--nexus-muted-2);
+  font-size: .88rem;
+  line-height: 1.5;
+}
+
+/* 3 progress dots (Figma: below text) */
+.splash-dots {
+  display: flex;
+  gap: 8px;
+}
+.splash-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--nexus-surface-2);
+}
+.splash-dots span.active {
+  background: var(--ion-color-primary);
+  box-shadow: 0 0 8px var(--ion-color-primary);
+}

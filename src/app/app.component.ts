@@ -2,12 +2,13 @@ import { Component } from '@angular/core';
 import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
-  add, albumsOutline, arrowForward, arrowUp, calendarOutline, chatbubbleOutline,
-  chatbubbles, chatbubblesOutline, checkboxOutline, checkmark, checkmarkCircle,
-  checkmarkCircleOutline, chevronBack, chevronForward, close, cloudUploadOutline,
-  codeSlashOutline, documentsOutline, documentText, documentTextOutline,
-  ellipseOutline, ellipsisVertical, flameOutline, flash, gridOutline,
-  helpCircleOutline, languageOutline, layersOutline, libraryOutline,
+  add, albumsOutline, arrowForward, arrowUp, calendarOutline,
+  airplaneOutline, chatbubbleEllipsesOutline, chatbubbleOutline, chatbubbles, chatbubblesOutline,
+  checkboxOutline, checkmark, checkmarkCircle, checkmarkCircle as checkmarkCircleOutline,
+  chevronBack, chevronForward, close, cloudUploadOutline, codeSlashOutline,
+  documentOutline, documentsOutline, documentText, documentTextOutline, ellipseOutline,
+  ellipsisVertical, flameOutline, flash, gridOutline, helpCircleOutline,
+  homeOutline, languageOutline, layersOutline, libraryOutline,
   lockClosedOutline, logoGoogle, logOutOutline, mailOutline, moonOutline,
   notificationsOutline, person, personOutline, readerOutline, refreshOutline,
   schoolOutline, shieldCheckmarkOutline, sparkles, sparklesOutline,
@@ -23,12 +24,13 @@ import {
 export class AppComponent {
   constructor() {
     addIcons({
-      add, albumsOutline, arrowForward, arrowUp, calendarOutline, chatbubbleOutline,
-      chatbubbles, chatbubblesOutline, checkboxOutline, checkmark, checkmarkCircle,
-      checkmarkCircleOutline, chevronBack, chevronForward, close, cloudUploadOutline,
-      codeSlashOutline, documentsOutline, documentText, documentTextOutline,
-      ellipseOutline, ellipsisVertical, flameOutline, flash, gridOutline,
-      helpCircleOutline, languageOutline, layersOutline, libraryOutline,
+      add, albumsOutline, airplaneOutline, arrowForward, arrowUp, calendarOutline,
+      chatbubbleEllipsesOutline, chatbubbleOutline, chatbubbles, chatbubblesOutline,
+      checkboxOutline, checkmark, checkmarkCircle, checkmarkCircleOutline,
+      chevronBack, chevronForward, close, cloudUploadOutline, codeSlashOutline,
+      documentOutline, documentsOutline, documentText, documentTextOutline, ellipseOutline,
+      ellipsisVertical, flameOutline, flash, gridOutline, helpCircleOutline,
+      homeOutline, languageOutline, layersOutline, libraryOutline,
       lockClosedOutline, logoGoogle, logOutOutline, mailOutline, moonOutline,
       notificationsOutline, person, personOutline, readerOutline, refreshOutline,
       schoolOutline, shieldCheckmarkOutline, sparkles, sparklesOutline,

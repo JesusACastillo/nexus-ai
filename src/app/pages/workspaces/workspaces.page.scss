@@ -1,0 +1,27 @@
+/* ── Workspaces page specific ─────────────────────────────────────────── */
+/* Title + "Nuevo" pill inline (Figma exact) */
+.ws-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+/* "+ Nuevo" pill button (Figma: cyan pill top-right of title) */
+.new-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 14px;
+  border-radius: 99px;
+  border: none;
+  background: var(--ion-color-primary);
+  color: #020d18;
+  font-size: .76rem;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: opacity .18s;
+}
+.new-btn ion-icon { font-size: .95rem; }
+.new-btn:active { opacity: .8; }

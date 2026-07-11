@@ -14,16 +14,26 @@ export class LogoComponent { @Input() compact = false; }
 
 @Component({
   selector: 'app-header', standalone: true, imports: [IonHeader, IonToolbar, IonIcon, IonButton, LogoComponent, RouterLink], styleUrls: ['./ui-kit.components.scss'],
-  template: `<ion-header class="ion-no-border"><ion-toolbar><app-logo></app-logo><div slot="end" class="header-actions">@if (showBack) {<ion-button fill="clear" [routerLink]="backLink" aria-label="Volver"><ion-icon name="chevron-back"></ion-icon></ion-button>}<ion-button fill="clear" routerLink="/profile" aria-label="Perfil"><span class="avatar-mini">J</span></ion-button></div></ion-toolbar></ion-header>`
+  template: `<ion-header class="ion-no-border"><ion-toolbar>
+    @if (showBack) {
+      <ion-button class="back-btn" fill="clear" slot="start" [routerLink]="backLink" aria-label="Volver"><ion-icon name="chevron-back"></ion-icon></ion-button>
+    } @else {
+      <app-logo slot="start"></app-logo>
+    }
+    <div slot="end" class="header-actions">
+      <ion-button fill="clear" aria-label="Notificaciones"><ion-icon name="notifications-outline"></ion-icon></ion-button>
+      <div class="header-avatar" [routerLink]="'/profile'">J</div>
+    </div>
+  </ion-toolbar></ion-header>`
 })
 export class AppHeaderComponent { @Input() showBack = false; @Input() backLink = '/dashboard'; }
 
 @Component({
   selector: 'app-bottom-tabs', standalone: true, imports: [IonIcon, RouterLink, RouterLinkActive], styleUrls: ['./ui-kit.components.scss'],
-  template: `<nav class="bottom-tabs glass" aria-label="Navegación principal">
-    <a routerLink="/dashboard" routerLinkActive="active"><ion-icon name="grid-outline"></ion-icon><span>Inicio</span></a>
-    <a routerLink="/workspaces" routerLinkActive="active"><ion-icon name="layers-outline"></ion-icon><span>Espacios</span></a>
-    <a routerLink="/library" routerLinkActive="active"><ion-icon name="documents-outline"></ion-icon><span>Biblioteca</span></a>
+  template: `<nav class="bottom-tabs" aria-label="Navegación principal">
+    <a routerLink="/dashboard" routerLinkActive="active"><ion-icon name="home-outline"></ion-icon><span>Inicio</span></a>
+    <a routerLink="/library" routerLinkActive="active"><ion-icon name="library-outline"></ion-icon><span>Biblioteca</span></a>
+    <a routerLink="/chat" routerLinkActive="active"><ion-icon name="chatbubble-ellipses-outline"></ion-icon><span>Chat</span></a>
     <a routerLink="/tasks" routerLinkActive="active"><ion-icon name="checkbox-outline"></ion-icon><span>Tareas</span></a>
     <a routerLink="/profile" routerLinkActive="active"><ion-icon name="person-outline"></ion-icon><span>Perfil</span></a>
   </nav>`
@@ -62,9 +72,10 @@ export class StatusBadgeComponent { @Input() label = ''; @Input() tone = 'cyan';
 
 @Component({
   selector: 'app-workspace-card', standalone: true, imports: [IonCard, IonCardContent, IonIcon, RouterLink], styleUrls: ['./ui-kit.components.scss'],
-  template: `<ion-card class="entity-card workspace-card" [routerLink]="['/subjects', workspace.id]"><ion-card-content><div class="entity-icon" [style.--accent]="workspace.color"><ion-icon [name]="workspace.icon"></ion-icon></div><div class="entity-copy"><h3>{{ workspace.title }}</h3><p>{{ workspace.description }}</p><small>{{ workspace.count }} colecciones</small></div><ion-icon class="chevron" name="chevron-forward"></ion-icon></ion-card-content></ion-card>`
+  template: `<ion-card class="entity-card workspace-card" [routerLink]="['/subjects', workspace.id]"><ion-card-content><div class="entity-icon" [style.--accent]="workspace.color"><ion-icon [name]="workspace.icon"></ion-icon></div><div class="entity-copy"><h3>{{ workspace.title }}</h3><p>{{ workspace.description }}</p><div class="workspace-metrics"><span><ion-icon name="document-text-outline"></ion-icon>{{ workspace.count }}</span><span><ion-icon name="checkmark-circle-outline"></ion-icon>{{ 0 }}</span></div></div><ion-icon class="chevron" name="chevron-forward"></ion-icon></ion-card-content></ion-card>`
 })
 export class WorkspaceCardComponent { @Input({ required: true }) workspace!: Workspace; }
+
 
 @Component({
   selector: 'app-subject-card', standalone: true, imports: [IonCard, IonCardContent, IonProgressBar, RouterLink], styleUrls: ['./ui-kit.components.scss'],

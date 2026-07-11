@@ -1,26 +1,47 @@
 :root {
   --ion-font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --ion-background-color: #070b14;
-  --ion-background-color-rgb: 7, 11, 20;
-  --ion-text-color: #f6f8ff;
-  --ion-text-color-rgb: 246, 248, 255;
-  --ion-color-primary: #35d6ff;
-  --ion-color-primary-rgb: 53, 214, 255;
-  --ion-color-primary-contrast: #031018;
-  --ion-color-primary-contrast-rgb: 3, 16, 24;
-  --ion-color-primary-shade: #2fbcE0;
-  --ion-color-primary-tint: #49daff;
-  --ion-color-secondary: #7657ff;
-  --ion-color-secondary-rgb: 118, 87, 255;
-  --ion-color-tertiary: #b45cff;
-  --ion-color-success: #32e6a1;
-  --ion-color-warning: #ffbd59;
-  --ion-color-danger: #ff6685;
-  --nexus-bg: #070b14;
-  --nexus-surface: #0d1422;
-  --nexus-surface-2: #111b2c;
-  --nexus-border: rgba(139, 169, 209, .15);
-  --nexus-muted: #8290a8;
-  --nexus-gradient: linear-gradient(135deg, #25d7ff 0%, #7770ff 52%, #b45cff 100%);
-  --nexus-shadow: 0 18px 48px rgba(0, 0, 0, .32);
+
+  /* ── Nexus AI exact Figma palette ───────────────────────────────────── */
+  --ion-background-color: #0a0e1a;
+  --ion-background-color-rgb: 10, 14, 26;
+  --ion-text-color: #f0f4ff;
+  --ion-text-color-rgb: 240, 244, 255;
+
+  /* Primary = cyan */
+  --ion-color-primary: #00d4ff;
+  --ion-color-primary-rgb: 0, 212, 255;
+  --ion-color-primary-contrast: #020d18;
+  --ion-color-primary-contrast-rgb: 2, 13, 24;
+  --ion-color-primary-shade: #00b8dd;
+  --ion-color-primary-tint: #26daff;
+
+  /* Secondary = indigo/violet */
+  --ion-color-secondary: #6c63ff;
+  --ion-color-secondary-rgb: 108, 99, 255;
+
+  /* Tertiary = purple */
+  --ion-color-tertiary: #a855f7;
+  --ion-color-success: #10b981;
+  --ion-color-warning: #f59e0b;
+  --ion-color-danger: #ef4444;
+
+  /* ── Custom Nexus tokens ─────────────────────────────────────────────── */
+  --nexus-bg:          #0a0e1a;
+  --nexus-surface:     #111827;
+  --nexus-surface-2:   #1c2537;
+  --nexus-border:      rgba(255,255,255,.08);
+  --nexus-border-2:    rgba(255,255,255,.12);
+  --nexus-muted:       #6b7280;
+  --nexus-muted-2:     #9ca3af;
+
+  /* Gradient: cyan → indigo → purple (matches Figma buttons) */
+  --nexus-gradient:    linear-gradient(135deg, #00d4ff 0%, #6c63ff 60%, #a855f7 100%);
+  --nexus-gradient-h:  linear-gradient(90deg,  #00d4ff 0%, #6c63ff 100%);
+
+  --nexus-shadow:      0 4px 24px rgba(0,0,0,.4);
+  --nexus-shadow-lg:   0 8px 40px rgba(0,0,0,.5);
+
+  /* Tab/header heights */
+  --nexus-header-h:    64px;
+  --nexus-tabs-h:      64px;
 }

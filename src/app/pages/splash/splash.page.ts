@@ -1,12 +1,21 @@
-import { Component } from '@angular/core';
-import { IonContent, IonIcon } from '@ionic/angular/standalone';
-import { RouterLink } from '@angular/router';
-import { LogoComponent, PrimaryButtonComponent } from '../../shared/components/ui-kit.components';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { IonContent } from '@ionic/angular/standalone';
 
-@Component({ selector: 'app-splash', standalone: true, imports: [IonContent, IonIcon, RouterLink, LogoComponent, PrimaryButtonComponent], styleUrls: ['../pages.scss', './splash.page.scss'], template: `
-<ion-content><div class="splash-wrap">
-  <div class="ambient one"></div><div class="ambient two"></div>
-  <div class="splash-brand"><app-logo [compact]="true"></app-logo><h1>Nexus <span>AI</span></h1><p>Tu conocimiento, conectado.</p></div>
-  <div class="splash-footer"><app-primary-button routerLink="/onboarding">Comenzar <ion-icon name="arrow-forward" slot="end"></ion-icon></app-primary-button><small>Tu segundo cerebro con inteligencia artificial</small></div>
-</div></ion-content>` })
-export class SplashPage {}
+@Component({ selector: 'app-splash', standalone: true, imports: [IonContent], styleUrls: ['./splash.page.scss'], template: `
+<ion-content>
+  <div class="splash-wrap">
+    <!-- Figma: circular gradient orb with brain/N icon -->
+    <div class="splash-orb">
+      <span class="splash-n">N</span>
+    </div>
+    <h1 class="splash-title">Nexus AI</h1>
+    <p class="splash-sub">Tu segundo cerebro inteligente</p>
+    <!-- Progress dots (Figma: 3 dots) -->
+    <div class="splash-dots"><span class="active"></span><span></span><span></span></div>
+  </div>
+</ion-content>` })
+export class SplashPage implements OnInit {
+  constructor(private router: Router) {}
+  ngOnInit() { setTimeout(() => this.router.navigateByUrl('/onboarding', { replaceUrl: true }), 2600); }
+}
