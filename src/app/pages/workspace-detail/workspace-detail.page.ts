@@ -6,22 +6,22 @@ import {
   IonSelect, IonSelectOption, IonButton, IonHeader, 
   IonToolbar, IonTitle, IonButtons 
 } from '@ionic/angular/standalone';
-import { DOCUMENTS, TASKS } from '../../core/data/mock-data';
 import { 
   AppHeaderComponent, BottomTabsComponent, DocumentCardComponent, 
   TaskCardComponent, SubjectCardComponent, AppInputComponent, 
   PrimaryButtonComponent 
 } from '../../shared/components/ui-kit.components';
-import { Workspace, Subject } from '../../core/models/ui.models';
+import { Workspace, Subject, DocumentItem } from '../../core/models/ui.models';
 import { WorkspacesService } from '../../core/services/workspaces.service';
 import { SubjectsService, SubjectDB } from '../../core/services/subjects.service';
+import { DocumentsService } from '../../core/services/documents.service';
 
 @Component({ 
   selector: 'app-workspace-detail', 
   standalone: true, 
   imports: [
     IonContent, IonIcon, RouterLink, AppHeaderComponent, BottomTabsComponent, 
-    DocumentCardComponent, TaskCardComponent, SubjectCardComponent, IonModal, 
+    DocumentCardComponent, SubjectCardComponent, IonModal, 
     IonSpinner, FormsModule, AppInputComponent, PrimaryButtonComponent, 
     IonItem, IonSelect, IonSelectOption, IonButton, IonHeader, 
     IonToolbar, IonTitle, IonButtons
@@ -87,14 +87,26 @@ import { SubjectsService, SubjectDB } from '../../core/services/subjects.service
     </div>
     
     <div class="section-heading"><h2>Documentos recientes</h2><a routerLink="/library">Ver todos</a></div>
-    @for (document of documents.slice(0,2); track document.id) {
-      <app-document-card [document]="document"></app-document-card>
+    @if (loadingDocs) {
+      <div style="display: flex; justify-content: center; padding: 2rem;">
+        <ion-spinner name="crescent" color="primary"></ion-spinner>
+      </div>
+    } @else if (documents.length === 0) {
+      <div style="padding: 1.5rem 1rem; text-align: center; border: 1px dashed var(--nexus-border); border-radius: 12px; margin-bottom: 2rem;">
+        <ion-icon name="document-text-outline" style="font-size: 2rem; color: var(--nexus-muted); margin-bottom: 8px;"></ion-icon>
+        <p style="color: var(--nexus-muted-2); margin: 0; font-size: 0.9rem;">Aún no tienes documentos.</p>
+      </div>
+    } @else {
+      @for (document of documents.slice(0,3); track document.id) {
+        <app-document-card [document]="document"></app-document-card>
+      }
     }
     
     <div class="section-heading"><h2>Actividad reciente</h2></div>
-    @for (task of tasks.slice(0,2); track task.id) {
-      <app-task-card [task]="task"></app-task-card>
-    }
+    <div style="padding: 1.5rem 1rem; text-align: center; border: 1px dashed var(--nexus-border); border-radius: 12px; margin-bottom: 2rem;">
+      <ion-icon name="time-outline" style="font-size: 2rem; color: var(--nexus-muted); margin-bottom: 8px;"></ion-icon>
+      <p style="color: var(--nexus-muted-2); margin: 0; font-size: 0.9rem;">Aún no hay actividad reciente.</p>
+    </div>
   } @else {
     <div style="padding: 2rem; text-align: center; color: var(--nexus-muted-2);">
       Espacio no encontrado
@@ -152,8 +164,8 @@ export class WorkspaceDetailPage implements OnInit {
   subjects: Subject[] = [];
   loadingSubjects = true;
 
-  documents = DOCUMENTS; 
-  tasks = TASKS; 
+  documents: DocumentItem[] = []; 
+  loadingDocs = true;
 
   isModalOpen = false;
   creating = false;
@@ -165,7 +177,8 @@ export class WorkspaceDetailPage implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private workspacesService: WorkspacesService,
-    private subjectsService: SubjectsService
+    private subjectsService: SubjectsService,
+    private documentsService: DocumentsService
   ) {}
 
   ngOnInit() {
@@ -173,6 +186,7 @@ export class WorkspaceDetailPage implements OnInit {
     if (this.workspaceId) {
       this.loadWorkspace();
       this.loadSubjects();
+      this.loadDocuments();
     }
   }
 
@@ -208,6 +222,38 @@ export class WorkspaceDetailPage implements OnInit {
       progress: 0,
       next: 'Sin tareas',
       color: dbSubject.color
+    };
+  }
+
+  async loadDocuments() {
+    this.loadingDocs = true;
+    try {
+      const dbDocs = await this.documentsService.getDocumentsByWorkspace(this.workspaceId);
+      this.documents = dbDocs.map(d => this.mapDocument(d));
+    } catch (e) {
+      console.error('Error loading documents', e);
+    } finally {
+      this.loadingDocs = false;
+    }
+  }
+
+  private mapDocument(dbDoc: any): DocumentItem {
+    let docType = 'PDF';
+    if (dbDoc.document_type === 'text') docType = 'DOCX';
+    if (dbDoc.document_type === 'image') docType = 'PPTX'; 
+    
+    let metaText = 'Subido';
+    if (dbDoc.status === 'processing') metaText = 'Procesando...';
+    else if (dbDoc.status === 'ready') metaText = 'Listo';
+    else if (dbDoc.status === 'failed') metaText = 'Error';
+
+    return {
+      id: dbDoc.id,
+      title: dbDoc.title || dbDoc.file_name,
+      type: docType as any,
+      meta: metaText,
+      subject: this.workspace?.title || 'General',
+      color: this.workspace?.color || '#25d7ff'
     };
   }
 

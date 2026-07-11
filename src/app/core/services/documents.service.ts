@@ -58,6 +58,21 @@ export class DocumentsService {
     return data || [];
   }
 
+  async getDocumentById(id: string): Promise<DocumentDB> {
+    const user = this.supabase.currentUser;
+    if (!user) throw new Error('Usuario no autenticado');
+
+    const { data, error } = await this.supabase.client
+      .from('documents')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('id', id)
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
+
   async createDocument(workspaceId: string, subjectId: string, title: string, description: string, documentType: string): Promise<DocumentDB> {
     const user = this.supabase.currentUser;
     if (!user) throw new Error('Usuario no autenticado');
@@ -145,14 +160,21 @@ export class DocumentsService {
       status: 'uploaded'
     });
 
-    // 4. Procesar si es PDF
-    if (file.type === 'application/pdf') {
+    // 4. Procesar según el tipo de archivo
+    if (file.type === 'application/pdf' || file.type === 'text/plain') {
       try {
         await this.updateDocument(document.id, { status: 'processing' });
         
-        const extractedText = await this.extractPdfText(file);
+        let extractedText = '';
+
+        if (file.type === 'application/pdf') {
+          extractedText = await this.extractPdfText(file);
+        } else if (file.type === 'text/plain') {
+          extractedText = await file.text();
+        }
+
         if (!extractedText || extractedText.trim() === '') {
-          throw new Error('El PDF no contiene texto extraíble.');
+          throw new Error('El documento no contiene texto extraíble o está vacío.');
         }
 
         const chunks = this.splitTextIntoChunks(extractedText, 1000);
@@ -180,14 +202,14 @@ export class DocumentsService {
 
         updatedDocument = await this.updateDocument(document.id, { status: 'ready', error_message: '' });
       } catch (procError: any) {
-        console.error('Error processing PDF:', procError);
+        console.error('Error processing document:', procError);
         updatedDocument = await this.updateDocument(document.id, { 
           status: 'failed', 
-          error_message: procError.message || 'Error procesando el PDF' 
+          error_message: procError.message || 'Error procesando el documento' 
         });
       }
     } else {
-      // Si no es PDF, lo dejamos como ready directamente
+      // Si no es un formato procesable, lo dejamos como ready directamente (ej. imágenes)
       updatedDocument = await this.updateDocument(document.id, { status: 'ready' });
     }
 

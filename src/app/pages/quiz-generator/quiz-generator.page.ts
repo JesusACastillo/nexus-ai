@@ -1,7 +1,12 @@
 import { Component } from '@angular/core';
-import { IonContent, IonIcon, IonItem, IonLabel, IonRange, IonSegment, IonSegmentButton, IonToggle } from '@ionic/angular/standalone';
-import { AppHeaderComponent, PrimaryButtonComponent } from '../../shared/components/ui-kit.components';
+import { IonContent, IonIcon } from '@ionic/angular/standalone';
+import { AppHeaderComponent } from '../../shared/components/ui-kit.components';
 
-@Component({ selector: 'app-quiz-generator', standalone: true, imports: [IonContent, IonIcon, IonItem, IonLabel, IonRange, IonSegment, IonSegmentButton, IonToggle, AppHeaderComponent, PrimaryButtonComponent], styleUrls: ['../pages.scss'], template: `
-<app-header [showBack]="true" backLink="/documents/subnetting"></app-header><ion-content class="nexus-content"><span class="eyebrow">Generador inteligente</span><h1 class="page-title">Crear quiz</h1><p class="page-subtitle">Personaliza una evaluación a partir de tu contenido.</p><div class="form-card nexus-card"><span class="field-label">Fuente</span><ion-item class="select-item" lines="none"><ion-icon name="document-text-outline" slot="start"></ion-icon><ion-label>Guía de subnetting.pdf</ion-label></ion-item><span class="field-label">Dificultad</span><ion-segment value="medium"><ion-segment-button value="easy"><ion-label>Fácil</ion-label></ion-segment-button><ion-segment-button value="medium"><ion-label>Media</ion-label></ion-segment-button><ion-segment-button value="hard"><ion-label>Difícil</ion-label></ion-segment-button></ion-segment><span class="field-label">Número de preguntas</span><ion-range min="5" max="20" value="10" [pin]="true" [ticks]="true" [snaps]="true" step="5"></ion-range><span class="field-label">Tipo de preguntas</span><ion-item class="select-item" lines="none"><ion-label>Opción múltiple</ion-label><ion-toggle checked="true"></ion-toggle></ion-item><ion-item class="select-item" lines="none"><ion-label>Verdadero / Falso</ion-label><ion-toggle checked="true"></ion-toggle></ion-item><ion-item class="select-item" lines="none"><ion-label>Respuesta corta</ion-label><ion-toggle></ion-toggle></ion-item></div><div style="height:14px"></div><app-primary-button icon="sparkles-outline" routerLink="/quiz">Generar quiz</app-primary-button></ion-content>` })
+@Component({ selector: 'app-quiz-generator', standalone: true, imports: [IonContent, IonIcon, AppHeaderComponent], styleUrls: ['../pages.scss'], template: `
+<app-header [showBack]="true" backLink="/library"></app-header><ion-content class="nexus-content"><span class="eyebrow">Generador inteligente</span><h1 class="page-title">Crear quiz</h1><p class="page-subtitle">Personaliza una evaluación a partir de tu contenido.</p>
+<div style="padding: 2rem 1rem; text-align: center; border: 1px dashed var(--nexus-border); border-radius: 12px; margin: 2rem 0;">
+  <ion-icon name="help-circle-outline" style="font-size: 3rem; color: var(--nexus-muted); margin-bottom: 1rem;"></ion-icon>
+  <p style="color: var(--nexus-muted-2);">El generador de quizzes estará disponible próximamente.</p>
+</div>
+</ion-content>` })
 export class QuizGeneratorPage {}

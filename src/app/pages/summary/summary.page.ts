@@ -1,7 +1,12 @@
 import { Component } from '@angular/core';
-import { IonContent, IonSegment, IonSegmentButton, IonLabel } from '@ionic/angular/standalone';
-import { AppHeaderComponent, PrimaryButtonComponent } from '../../shared/components/ui-kit.components';
+import { IonContent, IonIcon } from '@ionic/angular/standalone';
+import { AppHeaderComponent } from '../../shared/components/ui-kit.components';
 
-@Component({ selector: 'app-summary', standalone: true, imports: [IonContent, IonSegment, IonSegmentButton, IonLabel, AppHeaderComponent, PrimaryButtonComponent], styleUrls: ['../pages.scss'], template: `
-<app-header [showBack]="true" backLink="/documents/subnetting"></app-header><ion-content class="nexus-content"><span class="eyebrow">Guía de subnetting</span><h1 class="page-title">Resumen de IA</h1><p class="page-subtitle">Generado a partir de 24 páginas.</p><ion-segment value="summary"><ion-segment-button value="summary"><ion-label>Resumen</ion-label></ion-segment-button><ion-segment-button value="key"><ion-label>Ideas clave</ion-label></ion-segment-button></ion-segment><div class="summary-block nexus-card"><h3>Visión general</h3><p>El subnetting permite dividir una red grande en segmentos más pequeños, seguros y administrables. La máscara define qué parte de una dirección identifica la red y cuál identifica los hosts.</p></div><div class="summary-block nexus-card"><h3>Puntos clave</h3><ul><li>IPv4 utiliza 32 bits divididos en cuatro octetos.</li><li>CIDR expresa la máscara mediante una longitud de prefijo.</li><li>Cada subred reserva una dirección de red y una de broadcast.</li><li>VLSM optimiza el uso del espacio de direcciones.</li></ul></div><div class="summary-block nexus-card"><h3>Conceptos detectados</h3><div class="chip-row"><span class="chip active">CIDR</span><span class="chip active">VLSM</span><span class="chip active">Máscara</span></div></div><app-primary-button icon="volume-high-outline">Escuchar resumen</app-primary-button></ion-content>` })
+@Component({ selector: 'app-summary', standalone: true, imports: [IonContent, IonIcon, AppHeaderComponent], styleUrls: ['../pages.scss'], template: `
+<app-header [showBack]="true" backLink="/library"></app-header><ion-content class="nexus-content"><span class="eyebrow">Documento seleccionado</span><h1 class="page-title">Resumen de IA</h1>
+<div style="padding: 2rem 1rem; text-align: center; border: 1px dashed var(--nexus-border); border-radius: 12px; margin: 2rem 0;">
+  <ion-icon name="reader-outline" style="font-size: 3rem; color: var(--nexus-muted); margin-bottom: 1rem;"></ion-icon>
+  <p style="color: var(--nexus-muted-2);">El resumen generado por IA estará disponible próximamente.</p>
+</div>
+</ion-content>` })
 export class SummaryPage {}

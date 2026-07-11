@@ -6,10 +6,9 @@ import {
   IonToolbar, IonTitle, IonButtons, IonButton, IonItem, 
   IonSelect, IonSelectOption 
 } from '@ionic/angular/standalone';
-import { TASKS } from '../../core/data/mock-data';
 import { 
   AppHeaderComponent, BottomTabsComponent, DocumentCardComponent, 
-  TaskCardComponent, AppInputComponent, PrimaryButtonComponent 
+  AppInputComponent, PrimaryButtonComponent 
 } from '../../shared/components/ui-kit.components';
 import { SubjectDB, SubjectsService } from '../../core/services/subjects.service';
 import { Workspace, DocumentItem } from '../../core/models/ui.models';
@@ -21,7 +20,7 @@ import { DocumentDB, DocumentsService } from '../../core/services/documents.serv
   standalone: true, 
   imports: [
     IonContent, IonIcon, RouterLink, AppHeaderComponent, BottomTabsComponent, 
-    DocumentCardComponent, TaskCardComponent, IonSpinner, IonModal, IonHeader,
+    DocumentCardComponent, IonSpinner, IonModal, IonHeader,
     IonToolbar, IonTitle, IonButtons, IonButton, FormsModule, AppInputComponent,
     IonItem, IonSelect, IonSelectOption, PrimaryButtonComponent
   ], 
@@ -89,9 +88,10 @@ import { DocumentDB, DocumentsService } from '../../core/services/documents.serv
     }
     
     <div class="section-heading"><h2>Actividad reciente</h2></div>
-    @for (task of tasks.slice(0,2); track task.id) {
-      <app-task-card [task]="task"></app-task-card>
-    }
+    <div style="padding: 1.5rem 1rem; text-align: center; border: 1px dashed var(--nexus-border); border-radius: 12px; margin-bottom: 2rem;">
+      <ion-icon name="time-outline" style="font-size: 2rem; color: var(--nexus-muted); margin-bottom: 8px;"></ion-icon>
+      <p style="color: var(--nexus-muted-2); margin: 0; font-size: 0.9rem;">Aún no hay actividad reciente.</p>
+    </div>
   } @else {
     <div style="padding: 2rem; text-align: center; color: var(--nexus-muted-2);">
       Materia no encontrada
@@ -160,8 +160,6 @@ export class SubjectDetailPage implements OnInit {
 
   documents: DocumentItem[] = [];
   loadingDocs = true;
-
-  tasks = TASKS; 
 
   isModalOpen = false;
   creating = false;
