@@ -299,6 +299,18 @@
   font-size: .68rem;
 }
 .or::before, .or::after { content: ''; height: 1px; flex: 1; background: var(--nexus-border); }
+/* Auth error message */
+.auth-error {
+  margin: -4px 0 14px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(239,68,68,.1);
+  border: 1px solid rgba(239,68,68,.25);
+  color: #fca5a5;
+  font-size: .78rem;
+  line-height: 1.45;
+  text-align: center;
+}
 
 /* Google button */
 .google-btn {

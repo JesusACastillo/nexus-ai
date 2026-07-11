@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import {
   IonAvatar, IonBadge, IonButton, IonCard, IonCardContent, IonHeader, IonIcon,
@@ -54,9 +54,18 @@ export class SecondaryButtonComponent { @Input() routerLink?: string; @Input() i
 
 @Component({
   selector: 'app-input', standalone: true, imports: [IonInput, IonItem, IonIcon], styleUrls: ['./ui-kit.components.scss'],
-  template: `<ion-item class="nexus-input" lines="none">@if (icon) {<ion-icon slot="start" [name]="icon"></ion-icon>}<ion-input [type]="type" [label]="label" labelPlacement="floating" [placeholder]="placeholder"></ion-input></ion-item>`
+  template: `<ion-item class="nexus-input" lines="none">@if (icon) {<ion-icon slot="start" [name]="icon"></ion-icon>}<ion-input [type]="type" [label]="label" labelPlacement="floating" [placeholder]="placeholder" [value]="value" (ionInput)="onInput($event)"></ion-input></ion-item>`
 })
-export class AppInputComponent { @Input() label = ''; @Input() placeholder = ''; @Input() icon?: string; @Input() type: 'text' | 'email' | 'password' = 'text'; }
+export class AppInputComponent {
+  @Input() label = '';
+  @Input() placeholder = '';
+  @Input() icon?: string;
+  @Input() type: 'text' | 'email' | 'password' = 'text';
+  @Input() value = '';
+  @Output() valueChange = new EventEmitter<string>();
+  onInput(ev: Event) { const val = (ev as CustomEvent).detail.value ?? ''; this.value = val; this.valueChange.emit(val); }
+}
+
 
 @Component({
   selector: 'app-search-bar', standalone: true, imports: [IonSearchbar], styleUrls: ['./ui-kit.components.scss'],

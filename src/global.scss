@@ -35,12 +35,10 @@ a {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* ── Scroll padding: header ≈64px + bottom tabs ≈64px + safe areas ─────── */
 .nexus-content::part(scroll) {
   padding: 8px 18px calc(100px + var(--ion-safe-area-bottom));
 }
 
-/* ── Typography ─────────────────────────────────────────────────────────── */
 .page-title {
   margin: 6px 0 4px;
   font-size: clamp(1.6rem, 6.5vw, 2rem);
@@ -84,7 +82,6 @@ a {
   cursor: pointer;
 }
 
-/* ── Utility classes ─────────────────────────────────────────────────────── */
 .nexus-card {
   background: var(--nexus-surface);
   border: 1px solid var(--nexus-border);
@@ -130,7 +127,6 @@ a {
   flex: 1;
 }
 
-/* ── ion-segment ────────────────────────────────────────────────────────── */
 ion-segment {
   --background: var(--nexus-surface);
   border: 1px solid var(--nexus-border);
@@ -160,7 +156,6 @@ ion-segment-button.segment-button-checked {
   border: 1px solid rgba(0, 212, 255, .25);
 }
 
-/* ── ion-toggle ─────────────────────────────────────────────────────────── */
 ion-toggle {
   --background: #1e2a3a;
   --background-checked: rgba(0, 212, 255, .25);
@@ -170,7 +165,6 @@ ion-toggle {
   padding: 0;
 }
 
-/* ── ion-range ──────────────────────────────────────────────────────────── */
 ion-range {
   --bar-background: #1e2a3a;
   --bar-background-active: var(--ion-color-primary);
@@ -180,17 +174,14 @@ ion-range {
   padding: 4px 0;
 }
 
-/* ── ion-select ─────────────────────────────────────────────────────────── */
 ion-select {
   --color: #e2e8f0;
 }
 
-/* ── ion-fab: position above bottom tabs ────────────────────────────────── */
 ion-fab[slot="fixed"][vertical="bottom"] {
   --bottom: calc(84px + var(--ion-safe-area-bottom));
 }
 
-/* ── Desktop container ──────────────────────────────────────────────────── */
 @media (min-width: 720px) {
   ion-app {
     max-width: 430px;

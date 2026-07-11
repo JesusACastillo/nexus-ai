@@ -1,14 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { IonContent, IonIcon } from '@ionic/angular/standalone';
 import { SUBJECTS, TASKS } from '../../core/data/mock-data';
-import { AppHeaderComponent, BottomTabsComponent, TaskCardComponent } from '../../shared/components/ui-kit.components';
+import { AppHeaderComponent, BottomTabsComponent } from '../../shared/components/ui-kit.components';
+import { SupabaseService } from '../../core/services/supabase.service';
 
-@Component({ selector: 'app-dashboard', standalone: true, imports: [IonContent, IonIcon, RouterLink, AppHeaderComponent, BottomTabsComponent, TaskCardComponent], styleUrls: ['../pages.scss'], template: `
+@Component({ selector: 'app-dashboard', standalone: true, imports: [IonContent, IonIcon, RouterLink, AppHeaderComponent, BottomTabsComponent], styleUrls: ['../pages.scss'], template: `
 <app-header></app-header>
 <ion-content class="nexus-content">
   <div class="content-pad">
-    <h1 class="page-title">Hola, Jesús</h1>
+    <h1 class="page-title">Hola, {{ firstName }}</h1>
     <p class="page-subtitle">¿Qué quieres aprender hoy?</p>
 
     <!-- Hero banner: TU RESUMEN INTELIGENTE (Figma exact) -->
@@ -67,4 +68,16 @@ import { AppHeaderComponent, BottomTabsComponent, TaskCardComponent } from '../.
   </div>
 </ion-content>
 <app-bottom-tabs></app-bottom-tabs>` })
-export class DashboardPage { subjects = SUBJECTS; tasks = TASKS; }
+export class DashboardPage implements OnInit {
+  subjects = SUBJECTS;
+  tasks = TASKS;
+  firstName = '';
+
+  constructor(private supabase: SupabaseService) {}
+
+  ngOnInit() {
+    const user = this.supabase.currentUser;
+    const fullName = user?.user_metadata?.['full_name'] ?? '';
+    this.firstName = fullName.split(' ')[0] || user?.email?.split('@')[0] || 'Usuario';
+  }
+}

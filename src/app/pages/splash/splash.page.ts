@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonContent } from '@ionic/angular/standalone';
+import { SupabaseService } from '../../core/services/supabase.service';
 
 @Component({ selector: 'app-splash', standalone: true, imports: [IonContent], styleUrls: ['./splash.page.scss'], template: `
 <ion-content>
@@ -16,6 +17,20 @@ import { IonContent } from '@ionic/angular/standalone';
   </div>
 </ion-content>` })
 export class SplashPage implements OnInit {
-  constructor(private router: Router) {}
-  ngOnInit() { setTimeout(() => this.router.navigateByUrl('/onboarding', { replaceUrl: true }), 2600); }
+  constructor(private router: Router, private supabase: SupabaseService) {}
+
+  ngOnInit() {
+    this.redirect();
+  }
+
+  private async redirect() {
+    // Wait at least 2.6s for the splash animation, and also for the session to resolve.
+    const [session] = await Promise.all([
+      this.supabase.getSession(),
+      new Promise(r => setTimeout(r, 2600)),
+    ]);
+
+    const target = session ? '/dashboard' : '/onboarding';
+    this.router.navigateByUrl(target, { replaceUrl: true });
+  }
 }

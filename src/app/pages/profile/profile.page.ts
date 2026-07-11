@@ -1,8 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { IonContent, IonIcon } from '@ionic/angular/standalone';
 import { AppHeaderComponent, BottomTabsComponent } from '../../shared/components/ui-kit.components';
+import { SupabaseService } from '../../core/services/supabase.service';
 
 @Component({ selector: 'app-profile', standalone: true, imports: [IonContent, IonIcon, RouterLink, AppHeaderComponent, BottomTabsComponent], styleUrls: ['../pages.scss'], template: `
-<app-header></app-header><ion-content class="nexus-content"><div class="profile-hero"><div class="profile-avatar">J</div><h1>Jesús Acosta</h1><p>Estudiante · Desarrollador</p></div><div class="metric-grid"><div class="metric"><ion-icon name="flame-outline"></ion-icon><strong>24</strong><span>Días de racha</span></div><div class="metric"><ion-icon name="library-outline"></ion-icon><strong>38</strong><span>Documentos</span></div><div class="metric"><ion-icon name="time-outline"></ion-icon><strong>47 h</strong><span>Tiempo de estudio</span></div><div class="metric"><ion-icon name="trophy-outline"></ion-icon><strong>86%</strong><span>Promedio quiz</span></div></div><div class="section-heading"><h2>Actividad</h2><a routerLink="/settings">Configuración</a></div><div class="summary-block nexus-card"><h3>Tu mejor semana hasta ahora</h3><p>Estudiaste un 18% más y completaste 12 tareas. Mantén el ritmo, sin olvidar descansar.</p></div><div class="two-col"><a class="action-tile nexus-card" routerLink="/study-plan"><ion-icon name="calendar-outline"></ion-icon><h3>Mi plan</h3><p>Próximas sesiones</p></a><a class="action-tile nexus-card" routerLink="/quiz-result"><ion-icon name="stats-chart-outline"></ion-icon><h3>Estadísticas</h3><p>Tu progreso global</p></a></div></ion-content><app-bottom-tabs></app-bottom-tabs>` })
-export class ProfilePage {}
+<app-header></app-header><ion-content class="nexus-content"><div class="profile-hero"><div class="profile-avatar">{{ initial }}</div><h1>{{ displayName }}</h1><p>Estudiante · Desarrollador</p></div><div class="metric-grid"><div class="metric"><ion-icon name="flame-outline"></ion-icon><strong>24</strong><span>Días de racha</span></div><div class="metric"><ion-icon name="library-outline"></ion-icon><strong>38</strong><span>Documentos</span></div><div class="metric"><ion-icon name="time-outline"></ion-icon><strong>47 h</strong><span>Tiempo de estudio</span></div><div class="metric"><ion-icon name="trophy-outline"></ion-icon><strong>86%</strong><span>Promedio quiz</span></div></div><div class="section-heading"><h2>Actividad</h2><a routerLink="/settings">Configuración</a></div><div class="summary-block nexus-card"><h3>Tu mejor semana hasta ahora</h3><p>Estudiaste un 18% más y completaste 12 tareas. Mantén el ritmo, sin olvidar descansar.</p></div><div class="two-col"><a class="action-tile nexus-card" routerLink="/study-plan"><ion-icon name="calendar-outline"></ion-icon><h3>Mi plan</h3><p>Próximas sesiones</p></a><a class="action-tile nexus-card" routerLink="/quiz-result"><ion-icon name="stats-chart-outline"></ion-icon><h3>Estadísticas</h3><p>Tu progreso global</p></a></div></ion-content><app-bottom-tabs></app-bottom-tabs>` })
+export class ProfilePage implements OnInit {
+  displayName = '';
+  initial = '';
+
+  constructor(private supabase: SupabaseService) {}
+
+  ngOnInit() {
+    const user = this.supabase.currentUser;
+    this.displayName = user?.user_metadata?.['full_name'] || user?.email?.split('@')[0] || 'Usuario';
+    this.initial = this.displayName.charAt(0).toUpperCase();
+  }
+}
