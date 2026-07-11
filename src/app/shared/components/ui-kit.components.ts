@@ -42,9 +42,9 @@ export class BottomTabsComponent {}
 
 @Component({
   selector: 'app-primary-button', standalone: true, imports: [IonButton, IonIcon, RouterLink], styleUrls: ['./ui-kit.components.scss'],
-  template: `<ion-button expand="block" class="primary-button" [routerLink]="routerLink" [type]="type">@if (icon) {<ion-icon slot="start" [name]="icon"></ion-icon>}<ng-content></ng-content></ion-button>`
+  template: `<ion-button expand="block" class="primary-button" [routerLink]="routerLink" [type]="type" [disabled]="disabled">@if (icon) {<ion-icon slot="start" [name]="icon"></ion-icon>}<ng-content></ng-content></ion-button>`
 })
-export class PrimaryButtonComponent { @Input() routerLink?: string; @Input() icon?: string; @Input() type: 'button' | 'submit' = 'button'; }
+export class PrimaryButtonComponent { @Input() routerLink?: string; @Input() icon?: string; @Input() type: 'button' | 'submit' = 'button'; @Input() disabled = false; }
 
 @Component({
   selector: 'app-secondary-button', standalone: true, imports: [IonButton, IonIcon, RouterLink], styleUrls: ['./ui-kit.components.scss'],

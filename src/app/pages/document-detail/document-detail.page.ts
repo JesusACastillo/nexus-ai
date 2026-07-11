@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { IonContent, IonIcon, IonSpinner } from '@ionic/angular/standalone';
 import { AppHeaderComponent, PrimaryButtonComponent, StatusBadgeComponent } from '../../shared/components/ui-kit.components';
 import { DocumentsService, DocumentDB } from '../../core/services/documents.service';
 import { SummariesService, SummaryDB } from '../../core/services/summaries.service';
+import { QuizzesService } from '../../core/services/quizzes.service';
 
 @Component({ selector: 'app-document-detail', standalone: true, imports: [IonContent, IonIcon, RouterLink, AppHeaderComponent, PrimaryButtonComponent, StatusBadgeComponent, IonSpinner, DatePipe], styleUrls: ['../pages.scss'], template: `
 <app-header [showBack]="true" backLink="/library"></app-header><ion-content class="nexus-content">
@@ -44,10 +45,14 @@ import { SummariesService, SummaryDB } from '../../core/services/summaries.servi
         <h3>Chat con documento</h3>
         <p>Próximamente...</p>
       </a>
-      <a class="action-tile nexus-card" routerLink="/quiz-generator">
-        <ion-icon name="help-circle-outline"></ion-icon>
+      <a class="action-tile nexus-card" (click)="generateQuiz()">
+        @if (generatingQuiz) {
+          <ion-spinner name="dots"></ion-spinner>
+        } @else {
+          <ion-icon name="help-circle-outline"></ion-icon>
+        }
         <h3>Crear quiz</h3>
-        <p>Próximamente...</p>
+        <p>Generar quiz interactivo</p>
       </a>
       <a class="action-tile nexus-card" routerLink="/flashcards">
         <ion-icon name="albums-outline"></ion-icon>
@@ -76,12 +81,15 @@ export class DocumentDetailPage implements OnInit {
   loading = true;
   summary: SummaryDB | null = null;
   generatingSummary = false;
+  generatingQuiz = false;
   errorMsg = '';
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private documentsService: DocumentsService,
-    private summariesService: SummariesService
+    private summariesService: SummariesService,
+    private quizzesService: QuizzesService
   ) {}
 
   ngOnInit() {
@@ -133,6 +141,29 @@ export class DocumentDetailPage implements OnInit {
       this.errorMsg = 'Error al generar resumen.';
     } finally {
       this.generatingSummary = false;
+    }
+  }
+
+  async generateQuiz() {
+    if (!this.document) return;
+    if (this.document.status !== 'ready') {
+      this.errorMsg = 'El documento aún no está listo para crear quiz.';
+      return;
+    }
+
+    this.generatingQuiz = true;
+    this.errorMsg = '';
+
+    try {
+      const response = await this.quizzesService.generateQuiz(this.document.id);
+      if (response && response.quiz) {
+        this.router.navigate(['/quiz', response.quiz.id]);
+      }
+    } catch (e: any) {
+      console.error('Error generating quiz', e);
+      this.errorMsg = 'Error al generar quiz: ' + (e.message || '');
+    } finally {
+      this.generatingQuiz = false;
     }
   }
 
