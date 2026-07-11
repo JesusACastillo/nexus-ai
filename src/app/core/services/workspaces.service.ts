@@ -57,6 +57,21 @@ export class WorkspacesService {
     return (data as WorkspaceDb[]).map(this.mapToUIModel);
   }
 
+  async getWorkspaceById(id: string): Promise<Workspace> {
+    const { data, error } = await this.supabase.client
+      .from('workspaces')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      console.error('Error fetching workspace:', error.message);
+      throw error;
+    }
+
+    return this.mapToUIModel(data as WorkspaceDb);
+  }
+
   async createWorkspace(name: string, description: string, type: string, color: string): Promise<Workspace> {
     const user = this.supabase.currentUser;
     if (!user) throw new Error('Usuario no autenticado');

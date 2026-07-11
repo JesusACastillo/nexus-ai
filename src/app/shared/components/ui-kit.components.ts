@@ -81,7 +81,7 @@ export class StatusBadgeComponent { @Input() label = ''; @Input() tone = 'cyan';
 
 @Component({
   selector: 'app-workspace-card', standalone: true, imports: [IonCard, IonCardContent, IonIcon, RouterLink], styleUrls: ['./ui-kit.components.scss'],
-  template: `<ion-card class="entity-card workspace-card" [routerLink]="['/subjects', workspace.id]"><ion-card-content><div class="entity-icon" [style.--accent]="workspace.color"><ion-icon [name]="workspace.icon"></ion-icon></div><div class="entity-copy"><h3>{{ workspace.title }}</h3><p>{{ workspace.description }}</p><div class="workspace-metrics"><span><ion-icon name="document-text-outline"></ion-icon>{{ workspace.count }}</span><span><ion-icon name="checkmark-circle-outline"></ion-icon>{{ 0 }}</span></div></div><ion-icon class="chevron" name="chevron-forward"></ion-icon></ion-card-content></ion-card>`
+  template: `<ion-card class="entity-card workspace-card" [routerLink]="['/workspaces', workspace.id]"><ion-card-content><div class="entity-icon" [style.--accent]="workspace.color"><ion-icon [name]="workspace.icon"></ion-icon></div><div class="entity-copy"><h3>{{ workspace.title }}</h3><p>{{ workspace.description }}</p><div class="workspace-metrics"><span><ion-icon name="document-text-outline"></ion-icon>{{ workspace.count }}</span><span><ion-icon name="checkmark-circle-outline"></ion-icon>{{ 0 }}</span></div></div><ion-icon class="chevron" name="chevron-forward"></ion-icon></ion-card-content></ion-card>`
 })
 export class WorkspaceCardComponent { @Input({ required: true }) workspace!: Workspace; }
 

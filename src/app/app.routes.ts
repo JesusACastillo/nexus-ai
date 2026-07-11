@@ -11,6 +11,7 @@ export const routes: Routes = [
   /* ── Protected routes (authGuard) ─────────────────────────────────────── */
   { path: 'dashboard', canActivate: [authGuard], loadComponent: () => import('./pages/dashboard/dashboard.page').then(m => m.DashboardPage) },
   { path: 'workspaces', canActivate: [authGuard], loadComponent: () => import('./pages/workspaces/workspaces.page').then(m => m.WorkspacesPage) },
+  { path: 'workspaces/:id', canActivate: [authGuard], loadComponent: () => import('./pages/workspace-detail/workspace-detail.page').then(m => m.WorkspaceDetailPage) },
   { path: 'subjects/:id', canActivate: [authGuard], loadComponent: () => import('./pages/subject-detail/subject-detail.page').then(m => m.SubjectDetailPage) },
   { path: 'library', canActivate: [authGuard], loadComponent: () => import('./pages/library/library.page').then(m => m.LibraryPage) },
   { path: 'upload', canActivate: [authGuard], loadComponent: () => import('./pages/upload/upload.page').then(m => m.UploadPage) },
