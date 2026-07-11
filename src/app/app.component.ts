@@ -13,7 +13,8 @@ import {
   notificationsOutline, person, personOutline, readerOutline, refreshOutline,
   schoolOutline, shieldCheckmarkOutline, sparkles, sparklesOutline,
   statsChartOutline, syncOutline, timeOutline, trendingUpOutline, trophy,
-  trophyOutline, volumeHighOutline
+  trophyOutline, volumeHighOutline, folderOutline, briefcaseOutline,
+  textOutline, colorPaletteOutline
 } from 'ionicons/icons';
 
 @Component({
@@ -35,7 +36,8 @@ export class AppComponent {
       notificationsOutline, person, personOutline, readerOutline, refreshOutline,
       schoolOutline, shieldCheckmarkOutline, sparkles, sparklesOutline,
       statsChartOutline, syncOutline, timeOutline, trendingUpOutline, trophy,
-      trophyOutline, volumeHighOutline
+      trophyOutline, volumeHighOutline, folderOutline, briefcaseOutline,
+      textOutline, colorPaletteOutline
     });
   }
 }
