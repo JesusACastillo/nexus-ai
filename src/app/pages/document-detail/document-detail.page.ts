@@ -41,10 +41,10 @@ import { FlashcardsService } from '../../core/services/flashcards.service';
         <h3>Resumen IA</h3>
         <p>Generar resumen</p>
       </a>
-      <a class="action-tile nexus-card" routerLink="/chat/document">
+      <a class="action-tile nexus-card" routerLink="/chat/document/{{ document.id }}">
         <ion-icon name="chatbubbles-outline"></ion-icon>
         <h3>Chat con documento</h3>
-        <p>Próximamente...</p>
+        <p>Conversar sobre el contenido</p>
       </a>
       <a class="action-tile nexus-card" (click)="generateQuiz()">
         @if (generatingQuiz) {
@@ -74,7 +74,7 @@ import { FlashcardsService } from '../../core/services/flashcards.service';
         <p style="color: var(--nexus-muted-2); text-align: center;">Aún no hay resumen generado.</p>
       }
     </div>
-    <app-primary-button icon="chatbubble-outline" routerLink="/chat/document">Preguntar a Nexus</app-primary-button>
+    <app-primary-button icon="chatbubble-outline" routerLink="/chat/document/{{ document.id }}">Preguntar a Nexus</app-primary-button>
   } @else {
     <div style="padding: 2rem; text-align: center; color: var(--nexus-muted-2);">
       Documento no encontrado

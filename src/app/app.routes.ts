@@ -18,7 +18,7 @@ export const routes: Routes = [
   { path: 'documents/:id', canActivate: [authGuard], loadComponent: () => import('./pages/document-detail/document-detail.page').then(m => m.DocumentDetailPage) },
   { path: 'summary', canActivate: [authGuard], loadComponent: () => import('./pages/summary/summary.page').then(m => m.SummaryPage) },
   { path: 'chat', canActivate: [authGuard], loadComponent: () => import('./pages/chat/chat.page').then(m => m.ChatPage), data: { mode: 'general' } },
-  { path: 'chat/document', canActivate: [authGuard], loadComponent: () => import('./pages/chat/chat.page').then(m => m.ChatPage), data: { mode: 'document' } },
+  { path: 'chat/document/:id', canActivate: [authGuard], loadComponent: () => import('./pages/chat/chat.page').then(m => m.ChatPage), data: { mode: 'document' } },
   { path: 'quiz-generator', canActivate: [authGuard], loadComponent: () => import('./pages/quiz-generator/quiz-generator.page').then(m => m.QuizGeneratorPage) },
   { path: 'quiz/:id', canActivate: [authGuard], loadComponent: () => import('./pages/quiz/quiz.page').then(m => m.QuizPage) },
   { path: 'quiz-result', canActivate: [authGuard], loadComponent: () => import('./pages/quiz-result/quiz-result.page').then(m => m.QuizResultPage) },
