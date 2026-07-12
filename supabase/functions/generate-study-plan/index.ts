@@ -707,6 +707,34 @@ serve(async (req) => {
       );
     }
 
+    if (savedItems && savedItems.length > 0) {
+      const now = new Date();
+      const tasksToInsert = savedItems.map((item: any) => {
+        const dueDate = new Date(now);
+        dueDate.setDate(dueDate.getDate() + (item.day_number - 1));
+        
+        return {
+          user_id: user.id,
+          workspace_id: newPlan.workspace_id,
+          subject_id: newPlan.subject_id,
+          document_id: newPlan.document_id,
+          study_plan_id: newPlan.id,
+          study_plan_item_id: item.id,
+          title: item.title,
+          description: item.description,
+          due_date: dueDate.toISOString(),
+          priority: "medium",
+          status: "pending",
+          is_completed: false
+        };
+      });
+
+      const { error: insertTasksError } = await supabase.from("tasks").insert(tasksToInsert);
+      if (insertTasksError) {
+        console.error("insert tasks error (non-fatal):", insertTasksError);
+      }
+    }
+
     return jsonResponse({
       success: true,
       study_plan: newPlan,

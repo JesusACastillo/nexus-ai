@@ -720,3 +720,18 @@
 .settings-list ion-icon { color: var(--ion-color-primary); margin-right: 14px; font-size: 1.05rem; }
 .danger-zone ion-item { --color: #f87171; }
 .danger-zone ion-icon { color: #f87171 !important; }
+
+/* ════════════════════════════════════════════════════════════════════════
+   DATETIME STYLES
+════════════════════════════════════════════════════════════════════════ */
+ion-datetime-button::part(native) {
+  background: var(--nexus-surface-2);
+  color: #f0f4ff;
+  border-radius: 8px;
+  border: 1px solid var(--nexus-border);
+}
+ion-datetime {
+  --background: var(--nexus-surface);
+  --title-color: #f0f4ff;
+  color: #f0f4ff;
+}

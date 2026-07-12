@@ -77,5 +77,19 @@ export class StudyPlanService {
       .eq('id', itemId);
 
     if (error) throw error;
+
+    // Sincronizar con la tabla tasks si existe una tarea ligada a este ítem
+    const { error: taskError } = await this.supabase.client
+      .from('tasks')
+      .update({ 
+        is_completed: isCompleted,
+        status: isCompleted ? 'completed' : 'pending',
+        completed_at: isCompleted ? new Date().toISOString() : null
+      })
+      .eq('study_plan_item_id', itemId);
+
+    if (taskError) {
+      console.error('Error syncing task completion from study plan:', taskError);
+    }
   }
 }
