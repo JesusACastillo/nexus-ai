@@ -109,6 +109,8 @@ export class ChatPage implements OnInit {
   ngOnInit() {
     if (this.mode === 'document' && this.documentId) {
       this.loadConversation();
+    } else if (this.mode === 'general') {
+      this.loadConversation();
     }
   }
 
@@ -117,7 +119,13 @@ export class ChatPage implements OnInit {
     this.errorMsg = '';
     
     try {
-      const conversation = await this.chatService.getLatestDocumentConversation(this.documentId!);
+      let conversation;
+      if (this.mode === 'document') {
+        conversation = await this.chatService.getLatestDocumentConversation(this.documentId!);
+      } else {
+        conversation = await this.chatService.getLatestGeneralConversation();
+      }
+      
       if (conversation) {
         this.conversationId = conversation.id;
         const msgs = await this.chatService.getConversationMessages(conversation.id);
@@ -170,12 +178,23 @@ export class ChatPage implements OnInit {
         this.sendingMessage = false;
         this.scrollToBottom();
       }
-    } else {
-      setTimeout(() => {
-        this.messages.push({ role: 'assistant', content: 'El asistente general aún no está disponible.' });
+    } else if (this.mode === 'general') {
+      try {
+        const response = await this.chatService.sendMessageToGeneral(
+          text,
+          this.conversationId
+        );
+        
+        this.conversationId = response.conversation_id;
+        
+        this.messages.push({ role: 'assistant', content: response.answer });
+      } catch (e: any) {
+        console.error('Error sending message', e);
+        this.toastService.showError('No se pudo enviar el mensaje: ' + (e.message || ''));
+      } finally {
         this.sendingMessage = false;
         this.scrollToBottom();
-      }, 1000);
+      }
     }
   }
 
