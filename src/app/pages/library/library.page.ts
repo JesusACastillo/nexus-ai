@@ -5,6 +5,7 @@ import { AppHeaderComponent, BottomTabsComponent, DocumentCardComponent, SearchB
 import { DocumentsService, DocumentDB } from '../../core/services/documents.service';
 import { DocumentItem } from '../../core/models/ui.models';
 import { SupabaseService } from '../../core/services/supabase.service';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({ selector: 'app-library', standalone: true, imports: [IonContent, IonIcon, RouterLink, AppHeaderComponent, BottomTabsComponent, DocumentCardComponent, SearchBarComponent, IonSpinner], styleUrls: ['../pages.scss'], template: `
 <app-header></app-header>
@@ -45,7 +46,7 @@ export class LibraryPage implements OnInit {
   filter = 'todos';
   loading = true;
 
-  constructor(private supabase: SupabaseService) {}
+  constructor(private supabase: SupabaseService, private toastService: ToastService) {}
 
   ngOnInit() {
     this.loadDocuments();
@@ -73,6 +74,7 @@ export class LibraryPage implements OnInit {
       this.filteredDocuments = [...this.documents];
     } catch (error) {
       console.error('Error loading documents', error);
+      this.toastService.showError('Error al cargar los documentos');
     } finally {
       this.loading = false;
     }

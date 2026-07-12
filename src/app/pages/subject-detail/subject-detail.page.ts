@@ -14,6 +14,7 @@ import { SubjectDB, SubjectsService } from '../../core/services/subjects.service
 import { Workspace, DocumentItem } from '../../core/models/ui.models';
 import { WorkspacesService } from '../../core/services/workspaces.service';
 import { DocumentDB, DocumentsService } from '../../core/services/documents.service';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({ 
   selector: 'app-subject-detail', 
@@ -173,7 +174,8 @@ export class SubjectDetailPage implements OnInit {
     private route: ActivatedRoute,
     private subjectsService: SubjectsService,
     private workspacesService: WorkspacesService,
-    private documentsService: DocumentsService
+    private documentsService: DocumentsService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit() {
@@ -194,11 +196,13 @@ export class SubjectDetailPage implements OnInit {
           this.workspace = await this.workspacesService.getWorkspaceById(this.subject.workspace_id);
         } catch (e) {
           console.error('Error loading parent workspace', e);
+          this.toastService.showError('Error al cargar espacio');
         }
         await this.loadDocuments();
       }
     } catch (e) {
       console.error('Error loading subject', e);
+      this.toastService.showError('Error al cargar la materia');
       this.subject = null;
     } finally {
       this.loading = false;
@@ -212,6 +216,7 @@ export class SubjectDetailPage implements OnInit {
       this.documents = dbDocs.map(d => this.mapDocument(d));
     } catch (e) {
       console.error('Error loading documents', e);
+      this.toastService.showError('No se pudieron cargar los documentos');
     } finally {
       this.loadingDocs = false;
     }
@@ -303,7 +308,7 @@ export class SubjectDetailPage implements OnInit {
       }
     } catch (error: any) {
       console.error('Error uploading document', error);
-      this.errorMsg = error.message || 'Error al subir el documento';
+      this.toastService.showError(error.message || 'Error al subir el documento');
     } finally {
       this.creating = false;
     }

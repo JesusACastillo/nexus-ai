@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IonContent, IonIcon, IonProgressBar, IonSpinner } from '@ionic/angular/standalone';
 import { AppHeaderComponent, PrimaryButtonComponent } from '../../shared/components/ui-kit.components';
 import { QuizzesService, QuizDB, QuizQuestionDB, SubmitQuizResponse } from '../../core/services/quizzes.service';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({ selector: 'app-quiz', standalone: true, imports: [IonContent, IonIcon, IonProgressBar, IonSpinner, AppHeaderComponent, PrimaryButtonComponent], styleUrls: ['../pages.scss'], template: `
 <app-header [showBack]="true" backLink="/library"></app-header><ion-content class="nexus-content">
@@ -95,7 +96,8 @@ export class QuizPage implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private quizzesService: QuizzesService
+    private quizzesService: QuizzesService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit() {
@@ -113,6 +115,7 @@ export class QuizPage implements OnInit {
       this.questions = await this.quizzesService.getQuestionsByQuiz(id);
     } catch (e) {
       console.error('Error loading quiz', e);
+      this.toastService.showError('Error al cargar el quiz');
     } finally {
       this.loading = false;
     }
@@ -168,7 +171,7 @@ export class QuizPage implements OnInit {
       this.result = await this.quizzesService.submitQuiz(this.quiz.id, this.userAnswers);
     } catch (error) {
       console.error('Error submitting quiz', error);
-      alert('Error enviando el quiz. Por favor intenta de nuevo.');
+      this.toastService.showError('Error enviando el quiz. Por favor intenta de nuevo.');
       this.userAnswers.pop(); // Revert the last answer so user can try again
     } finally {
       this.submitting = false;

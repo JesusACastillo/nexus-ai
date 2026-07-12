@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { IonContent, IonIcon, IonSpinner } from '@ionic/angular/standalone';
 import { AppHeaderComponent, PrimaryButtonComponent, StatusBadgeComponent } from '../../shared/components/ui-kit.components';
 import { FlashcardsService, FlashcardDB } from '../../core/services/flashcards.service';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-flashcards',
@@ -98,10 +99,6 @@ import { FlashcardsService, FlashcardDB } from '../../core/services/flashcards.s
         <div style="display: flex; justify-content: center; padding: 3rem;">
           <ion-spinner name="crescent" color="primary"></ion-spinner>
         </div>
-      } @else if (errorMsg) {
-        <div style="color: var(--ion-color-danger); text-align: center; padding: 2rem;">
-          {{ errorMsg }}
-        </div>
       } @else if (flashcards.length === 0) {
         <div style="padding: 2rem; text-align: center; color: var(--nexus-muted-2);">
           No hay flashcards para este documento.
@@ -170,7 +167,8 @@ export class FlashcardsPage implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private flashcardsService: FlashcardsService
+    private flashcardsService: FlashcardsService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit() {
@@ -178,7 +176,7 @@ export class FlashcardsPage implements OnInit {
     if (this.documentId) {
       this.loadFlashcards(this.documentId);
     } else {
-      this.errorMsg = 'ID de documento no proporcionado.';
+      this.toastService.showError('ID de documento no proporcionado.');
       this.loading = false;
     }
   }
@@ -190,7 +188,7 @@ export class FlashcardsPage implements OnInit {
       this.flashcards = await this.flashcardsService.getFlashcardsByDocument(documentId);
     } catch (e: any) {
       console.error('Error loading flashcards', e);
-      this.errorMsg = 'Error al cargar las flashcards: ' + (e.message || '');
+      this.toastService.showError('Error al cargar las flashcards: ' + (e.message || ''));
     } finally {
       this.loading = false;
     }

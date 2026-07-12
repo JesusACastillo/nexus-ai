@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonButton, IonContent, IonIcon, IonInput, IonSpinner } from '@ionic/angular/standalone';
 import { AppHeaderComponent, BottomTabsComponent } from '../../shared/components/ui-kit.components';
 import { ChatService, ChatMessage } from '../../core/services/chat.service';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-chat',
@@ -27,12 +28,6 @@ import { ChatService, ChatMessage } from '../../core/services/chat.service';
           <strong>Documento conectado</strong><br>
           Listo para responder preguntas
         </div>
-      </div>
-    }
-
-    @if (errorMsg) {
-      <div style="margin: 1rem; color: var(--ion-color-danger); text-align: center; padding: 1rem; border: 1px dashed var(--ion-color-danger); border-radius: 8px;">
-        {{ errorMsg }}
       </div>
     }
 
@@ -102,7 +97,8 @@ export class ChatPage implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private toastService: ToastService
   ) {
     this.mode = this.route.snapshot.data['mode'] ?? 'general';
     if (this.mode === 'document') {
@@ -133,7 +129,7 @@ export class ChatPage implements OnInit {
       }
     } catch (e: any) {
       console.error('Error loading conversation', e);
-      this.errorMsg = 'Error al cargar el historial del chat: ' + (e.message || '');
+      this.toastService.showError('Error al cargar el historial del chat');
     } finally {
       this.loadingMessages = false;
     }
@@ -144,7 +140,7 @@ export class ChatPage implements OnInit {
     if (!text || this.sendingMessage) return;
 
     if (this.mode === 'document' && !this.documentId) {
-      this.errorMsg = 'No hay un documento seleccionado.';
+      this.toastService.showError('No hay un documento seleccionado.');
       return;
     }
 
@@ -169,7 +165,7 @@ export class ChatPage implements OnInit {
         this.messages.push({ role: 'assistant', content: response.answer });
       } catch (e: any) {
         console.error('Error sending message', e);
-        this.errorMsg = 'No se pudo enviar el mensaje: ' + (e.message || '');
+        this.toastService.showError('No se pudo enviar el mensaje: ' + (e.message || ''));
       } finally {
         this.sendingMessage = false;
         this.scrollToBottom();

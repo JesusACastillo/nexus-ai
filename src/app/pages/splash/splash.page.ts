@@ -13,7 +13,7 @@ import { SupabaseService } from '../../core/services/supabase.service';
     <h1 class="splash-title">Nexus AI</h1>
     <p class="splash-sub">Tu segundo cerebro inteligente</p>
     <!-- Progress dots (Figma: 3 dots) -->
-    <div class="splash-dots"><span class="active"></span><span></span><span></span></div>
+    <div class="splash-dots loading-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
   </div>
 </ion-content>` })
 export class SplashPage implements OnInit {

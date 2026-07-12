@@ -7,6 +7,7 @@ import { DocumentsService, DocumentDB } from '../../core/services/documents.serv
 import { SummariesService, SummaryDB } from '../../core/services/summaries.service';
 import { QuizzesService } from '../../core/services/quizzes.service';
 import { FlashcardsService } from '../../core/services/flashcards.service';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({ selector: 'app-document-detail', standalone: true, imports: [IonContent, IonIcon, RouterLink, AppHeaderComponent, PrimaryButtonComponent, StatusBadgeComponent, IonSpinner, DatePipe], styleUrls: ['../pages.scss'], template: `
 <app-header [showBack]="true" backLink="/library"></app-header><ion-content class="nexus-content">
@@ -24,12 +25,6 @@ import { FlashcardsService } from '../../core/services/flashcards.service';
       </div>
     </div>
     
-    @if (errorMsg) {
-      <div style="color: var(--ion-color-danger); padding: 1rem; text-align: center; border: 1px dashed var(--ion-color-danger); border-radius: 8px; margin-bottom: 1rem;">
-        {{ errorMsg }}
-      </div>
-    }
-
     <div class="section-heading"><h2>Acciones IA</h2></div>
     <div class="two-col">
       <a class="action-tile nexus-card" (click)="generateSummary()">
@@ -96,7 +91,8 @@ export class DocumentDetailPage implements OnInit {
     private documentsService: DocumentsService,
     private summariesService: SummariesService,
     private quizzesService: QuizzesService,
-    private flashcardsService: FlashcardsService
+    private flashcardsService: FlashcardsService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit() {
@@ -115,6 +111,7 @@ export class DocumentDetailPage implements OnInit {
       await this.loadSummary(id);
     } catch (e) {
       console.error('Error loading document', e);
+      this.toastService.showError('Error al cargar el documento');
       this.document = null;
     } finally {
       this.loading = false;
@@ -131,9 +128,9 @@ export class DocumentDetailPage implements OnInit {
   }
 
   async generateSummary() {
-    if (!this.document) return;
+    if (!this.document || this.generatingSummary) return;
     if (this.document.status !== 'ready') {
-      this.errorMsg = 'El documento aún no está listo para generar resumen.';
+      this.toastService.showError('El documento aún no está listo para generar resumen.');
       return;
     }
 
@@ -145,16 +142,16 @@ export class DocumentDetailPage implements OnInit {
       await this.loadSummary(this.document.id);
     } catch (e) {
       console.error('Error generating summary', e);
-      this.errorMsg = 'Error al generar resumen.';
+      this.toastService.showError('Error al generar resumen.');
     } finally {
       this.generatingSummary = false;
     }
   }
 
   async generateQuiz() {
-    if (!this.document) return;
+    if (!this.document || this.generatingQuiz) return;
     if (this.document.status !== 'ready') {
-      this.errorMsg = 'El documento aún no está listo para crear quiz.';
+      this.toastService.showError('El documento aún no está listo para crear quiz.');
       return;
     }
 
@@ -168,16 +165,16 @@ export class DocumentDetailPage implements OnInit {
       }
     } catch (e: any) {
       console.error('Error generating quiz', e);
-      this.errorMsg = 'Error al generar quiz: ' + (e.message || '');
+      this.toastService.showError('Error al generar quiz: ' + (e.message || ''));
     } finally {
       this.generatingQuiz = false;
     }
   }
 
   async generateFlashcards() {
-    if (!this.document) return;
+    if (!this.document || this.generatingFlashcards) return;
     if (this.document.status !== 'ready') {
-      this.errorMsg = 'El documento aún no está listo para generar flashcards.';
+      this.toastService.showError('El documento aún no está listo para generar flashcards.');
       return;
     }
 
@@ -189,7 +186,7 @@ export class DocumentDetailPage implements OnInit {
       this.router.navigate(['/flashcards', this.document.id]);
     } catch (e: any) {
       console.error('Error generating flashcards', e);
-      this.errorMsg = 'Error al generar flashcards: ' + (e.message || '');
+      this.toastService.showError('Error al generar flashcards: ' + (e.message || ''));
     } finally {
       this.generatingFlashcards = false;
     }

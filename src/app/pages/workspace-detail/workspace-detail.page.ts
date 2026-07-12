@@ -15,6 +15,7 @@ import { Workspace, Subject, DocumentItem } from '../../core/models/ui.models';
 import { WorkspacesService } from '../../core/services/workspaces.service';
 import { SubjectsService, SubjectDB } from '../../core/services/subjects.service';
 import { DocumentsService } from '../../core/services/documents.service';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({ 
   selector: 'app-workspace-detail', 
@@ -178,7 +179,8 @@ export class WorkspaceDetailPage implements OnInit {
     private route: ActivatedRoute,
     private workspacesService: WorkspacesService,
     private subjectsService: SubjectsService,
-    private documentsService: DocumentsService
+    private documentsService: DocumentsService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit() {
@@ -196,6 +198,7 @@ export class WorkspaceDetailPage implements OnInit {
       this.workspace = await this.workspacesService.getWorkspaceById(this.workspaceId);
     } catch (e) {
       console.error('Error loading workspace', e);
+      this.toastService.showError('No se pudo cargar el espacio');
       this.workspace = null;
     } finally {
       this.loadingWorkspace = false;
@@ -209,6 +212,7 @@ export class WorkspaceDetailPage implements OnInit {
       this.subjects = dbSubjects.map(s => this.mapSubject(s));
     } catch (e) {
       console.error('Error loading subjects', e);
+      this.toastService.showError('No se pudieron cargar las materias');
     } finally {
       this.loadingSubjects = false;
     }
@@ -232,6 +236,7 @@ export class WorkspaceDetailPage implements OnInit {
       this.documents = dbDocs.map(d => this.mapDocument(d));
     } catch (e) {
       console.error('Error loading documents', e);
+      this.toastService.showError('No se pudieron cargar los documentos');
     } finally {
       this.loadingDocs = false;
     }
@@ -289,7 +294,7 @@ export class WorkspaceDetailPage implements OnInit {
       this.closeModal();
     } catch (error: any) {
       console.error('Error creating subject', error);
-      this.errorMsg = error.message || 'Error al crear materia';
+      this.toastService.showError(error.message || 'Error al crear materia');
     } finally {
       this.creating = false;
     }

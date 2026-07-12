@@ -10,6 +10,7 @@ import {
 import { AppHeaderComponent, BottomTabsComponent } from '../../shared/components/ui-kit.components';
 import { StudyPlanService, StudyPlan, StudyPlanItem } from '../../core/services/study-plan.service';
 import { SupabaseService } from '../../core/services/supabase.service';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-study-plan',
@@ -190,7 +191,8 @@ export class StudyPlanPage implements OnInit {
 
   constructor(
     private studyPlanService: StudyPlanService,
-    private supabase: SupabaseService
+    private supabase: SupabaseService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit() {
@@ -204,6 +206,7 @@ export class StudyPlanPage implements OnInit {
       this.plans = await this.studyPlanService.getPlans();
     } catch (e) {
       console.error(e);
+      this.toastService.showError('Error al cargar planes de estudio');
     } finally {
       this.loading = false;
     }
@@ -221,6 +224,7 @@ export class StudyPlanPage implements OnInit {
       this.subjects = subsRes.data || [];
     } catch (e) {
       console.error(e);
+      this.toastService.showError('Error al cargar documentos/materias');
     }
   }
 
@@ -253,7 +257,7 @@ export class StudyPlanPage implements OnInit {
       this.form.subjectId = '';
     } catch (e) {
       console.error('Error generando plan', e);
-      alert('Hubo un error al generar el plan. Revisa la consola.');
+      this.toastService.showError('Hubo un error al generar el plan. Intenta de nuevo.');
     } finally {
       this.generating = false;
     }
@@ -266,6 +270,7 @@ export class StudyPlanPage implements OnInit {
       plan.items = await this.studyPlanService.getPlanItems(plan.id);
     } catch (e) {
       console.error(e);
+      this.toastService.showError('Error al cargar detalles del plan');
     } finally {
       plan.loadingItems = false;
     }
@@ -277,6 +282,7 @@ export class StudyPlanPage implements OnInit {
       await this.studyPlanService.updateItemCompletion(item.id, item.is_completed);
     } catch (e) {
       console.error('Error updating item', e);
+      this.toastService.showError('No se pudo actualizar la tarea');
       // Revert if error
       item.is_completed = !item.is_completed;
     }

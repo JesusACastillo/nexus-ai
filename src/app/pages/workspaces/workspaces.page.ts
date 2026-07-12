@@ -4,6 +4,7 @@ import { IonContent, IonIcon, IonModal, IonSpinner, IonItem, IonSelect, IonSelec
 import { AppHeaderComponent, BottomTabsComponent, SearchBarComponent, WorkspaceCardComponent, AppInputComponent, PrimaryButtonComponent } from '../../shared/components/ui-kit.components';
 import { WorkspacesService } from '../../core/services/workspaces.service';
 import { Workspace } from '../../core/models/ui.models';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-workspaces',
@@ -104,7 +105,7 @@ export class WorkspacesPage implements OnInit {
   newColor = '#7a5cff';
   errorMsg = '';
 
-  constructor(private workspacesService: WorkspacesService) {}
+  constructor(private workspacesService: WorkspacesService, private toastService: ToastService) {}
 
   ngOnInit() {
     this.loadWorkspaces();
@@ -116,6 +117,7 @@ export class WorkspacesPage implements OnInit {
       this.workspaces = await this.workspacesService.getWorkspaces();
     } catch (error) {
       console.error('Error loading workspaces', error);
+      this.toastService.showError('No se pudieron cargar los espacios');
     } finally {
       this.loading = false;
     }
@@ -154,7 +156,7 @@ export class WorkspacesPage implements OnInit {
       this.closeModal();
     } catch (error: any) {
       console.error('Error al crear espacio', error);
-      this.errorMsg = error.message || 'Error al crear el espacio.';
+      this.toastService.showError(error.message || 'Error al crear el espacio');
     } finally {
       this.creating = false;
     }

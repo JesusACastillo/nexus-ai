@@ -5,6 +5,7 @@ import { IonContent, IonIcon, IonSpinner } from '@ionic/angular/standalone';
 import { AppHeaderComponent } from '../../shared/components/ui-kit.components';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { SupabaseService } from '../../core/services/supabase.service';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-ai-summaries',
@@ -53,7 +54,7 @@ export class AiSummariesPage implements OnInit {
   items: any[] = [];
   loading = true;
 
-  constructor(private dashboardService: DashboardService, private supabase: SupabaseService) {}
+  constructor(private dashboardService: DashboardService, private supabase: SupabaseService, private toastService: ToastService) {}
 
   async ngOnInit() {
     try {
@@ -63,6 +64,7 @@ export class AiSummariesPage implements OnInit {
       }
     } catch (e) {
       console.error(e);
+      this.toastService.showError('Error al cargar historiales');
     } finally {
       this.loading = false;
     }

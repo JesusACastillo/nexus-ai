@@ -9,6 +9,7 @@ import {
 } from '@ionic/angular/standalone';
 import { AppHeaderComponent, BottomTabsComponent } from '../../shared/components/ui-kit.components';
 import { TasksService, TaskDB } from '../../core/services/tasks.service';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-tasks',
@@ -159,7 +160,7 @@ export class TasksPage implements OnInit {
     due_date: new Date().toISOString()
   };
 
-  constructor(private tasksService: TasksService) {}
+  constructor(private tasksService: TasksService, private toastService: ToastService) {}
 
   ngOnInit() {
     this.loadTasks();
@@ -176,6 +177,7 @@ export class TasksPage implements OnInit {
       this.applyFilter();
     } catch (e) {
       console.error(e);
+      this.toastService.showError('Error al cargar tareas');
     } finally {
       this.loading = false;
     }
@@ -215,7 +217,8 @@ export class TasksPage implements OnInit {
       task.completed_at = updated.completed_at;
     } catch (e) {
       console.error('Error toggling task', e);
-      // Revert visually if error (usually handled automatically by bindings, but ionic checkboxes emit ionChange before model update)
+      this.toastService.showError('No se pudo actualizar la tarea');
+      // Revert visually if error
     }
   }
 
@@ -226,6 +229,7 @@ export class TasksPage implements OnInit {
       this.applyFilter();
     } catch (e) {
       console.error('Error deleting task', e);
+      this.toastService.showError('Error al eliminar tarea');
     }
   }
 
@@ -253,6 +257,7 @@ export class TasksPage implements OnInit {
       };
     } catch (e) {
       console.error('Error saving task', e);
+      this.toastService.showError('Error al guardar tarea');
     } finally {
       this.saving = false;
     }

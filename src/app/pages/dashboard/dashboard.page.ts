@@ -7,6 +7,7 @@ import { SupabaseService } from '../../core/services/supabase.service';
 import { WorkspacesService } from '../../core/services/workspaces.service';
 import { DashboardService, DashboardStats, ActivityItem } from '../../core/services/dashboard.service';
 import { Workspace } from '../../core/models/ui.models';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -140,7 +141,8 @@ export class DashboardPage implements OnInit {
   constructor(
     private supabase: SupabaseService, 
     private workspacesService: WorkspacesService,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit() {
@@ -161,6 +163,7 @@ export class DashboardPage implements OnInit {
       this.loadingSpaces = false;
     }).catch(e => {
       console.error('Error loading workspaces', e);
+      this.toastService.showError('No se pudieron cargar los espacios');
       this.loadingSpaces = false;
     });
 
@@ -175,6 +178,7 @@ export class DashboardPage implements OnInit {
       this.recentActivity = activityData;
     } catch (e) {
       console.error('Error loading dashboard stats', e);
+      this.toastService.showError('Error al cargar las estadísticas');
     } finally {
       this.loadingStats = false;
     }
