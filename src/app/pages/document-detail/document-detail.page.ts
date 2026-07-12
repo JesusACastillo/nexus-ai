@@ -6,6 +6,7 @@ import { AppHeaderComponent, PrimaryButtonComponent, StatusBadgeComponent } from
 import { DocumentsService, DocumentDB } from '../../core/services/documents.service';
 import { SummariesService, SummaryDB } from '../../core/services/summaries.service';
 import { QuizzesService } from '../../core/services/quizzes.service';
+import { FlashcardsService } from '../../core/services/flashcards.service';
 
 @Component({ selector: 'app-document-detail', standalone: true, imports: [IonContent, IonIcon, RouterLink, AppHeaderComponent, PrimaryButtonComponent, StatusBadgeComponent, IonSpinner, DatePipe], styleUrls: ['../pages.scss'], template: `
 <app-header [showBack]="true" backLink="/library"></app-header><ion-content class="nexus-content">
@@ -54,10 +55,14 @@ import { QuizzesService } from '../../core/services/quizzes.service';
         <h3>Crear quiz</h3>
         <p>Generar quiz interactivo</p>
       </a>
-      <a class="action-tile nexus-card" routerLink="/flashcards">
-        <ion-icon name="albums-outline"></ion-icon>
+      <a class="action-tile nexus-card" (click)="generateFlashcards()">
+        @if (generatingFlashcards) {
+          <ion-spinner name="dots"></ion-spinner>
+        } @else {
+          <ion-icon name="albums-outline"></ion-icon>
+        }
         <h3>Flashcards</h3>
-        <p>Próximamente...</p>
+        <p>Generar flashcards</p>
       </a>
     </div>
     
@@ -82,6 +87,7 @@ export class DocumentDetailPage implements OnInit {
   summary: SummaryDB | null = null;
   generatingSummary = false;
   generatingQuiz = false;
+  generatingFlashcards = false;
   errorMsg = '';
 
   constructor(
@@ -89,7 +95,8 @@ export class DocumentDetailPage implements OnInit {
     private router: Router,
     private documentsService: DocumentsService,
     private summariesService: SummariesService,
-    private quizzesService: QuizzesService
+    private quizzesService: QuizzesService,
+    private flashcardsService: FlashcardsService
   ) {}
 
   ngOnInit() {
@@ -164,6 +171,27 @@ export class DocumentDetailPage implements OnInit {
       this.errorMsg = 'Error al generar quiz: ' + (e.message || '');
     } finally {
       this.generatingQuiz = false;
+    }
+  }
+
+  async generateFlashcards() {
+    if (!this.document) return;
+    if (this.document.status !== 'ready') {
+      this.errorMsg = 'El documento aún no está listo para generar flashcards.';
+      return;
+    }
+
+    this.generatingFlashcards = true;
+    this.errorMsg = '';
+
+    try {
+      await this.flashcardsService.generateFlashcards(this.document.id);
+      this.router.navigate(['/flashcards', this.document.id]);
+    } catch (e: any) {
+      console.error('Error generating flashcards', e);
+      this.errorMsg = 'Error al generar flashcards: ' + (e.message || '');
+    } finally {
+      this.generatingFlashcards = false;
     }
   }
 

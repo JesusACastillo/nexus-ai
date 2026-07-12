@@ -22,7 +22,7 @@ export const routes: Routes = [
   { path: 'quiz-generator', canActivate: [authGuard], loadComponent: () => import('./pages/quiz-generator/quiz-generator.page').then(m => m.QuizGeneratorPage) },
   { path: 'quiz/:id', canActivate: [authGuard], loadComponent: () => import('./pages/quiz/quiz.page').then(m => m.QuizPage) },
   { path: 'quiz-result', canActivate: [authGuard], loadComponent: () => import('./pages/quiz-result/quiz-result.page').then(m => m.QuizResultPage) },
-  { path: 'flashcards', canActivate: [authGuard], loadComponent: () => import('./pages/flashcards/flashcards.page').then(m => m.FlashcardsPage) },
+  { path: 'flashcards/:id', canActivate: [authGuard], loadComponent: () => import('./pages/flashcards/flashcards.page').then(m => m.FlashcardsPage) },
   { path: 'tasks', canActivate: [authGuard], loadComponent: () => import('./pages/tasks/tasks.page').then(m => m.TasksPage) },
   { path: 'study-plan', canActivate: [authGuard], loadComponent: () => import('./pages/study-plan/study-plan.page').then(m => m.StudyPlanPage) },
   { path: 'profile', canActivate: [authGuard], loadComponent: () => import('./pages/profile/profile.page').then(m => m.ProfilePage) },
