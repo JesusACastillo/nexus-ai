@@ -16,12 +16,12 @@ export class LogoComponent { @Input() compact = false; }
   selector: 'app-header', standalone: true, imports: [IonHeader, IonToolbar, IonIcon, IonButton, LogoComponent, RouterLink], styleUrls: ['./ui-kit.components.scss'],
   template: `<ion-header class="ion-no-border"><ion-toolbar>
     @if (showBack) {
-      <ion-button class="back-btn" fill="clear" slot="start" [routerLink]="backLink" aria-label="Volver"><ion-icon name="chevron-back"></ion-icon></ion-button>
+      <ion-button class="back-btn header-icon-button" fill="clear" slot="start" [routerLink]="backLink" aria-label="Volver"><ion-icon name="chevron-back"></ion-icon></ion-button>
     } @else {
       <app-logo slot="start"></app-logo>
     }
     <div slot="end" class="header-actions">
-      <ion-button fill="clear" aria-label="Notificaciones"><ion-icon name="notifications-outline"></ion-icon></ion-button>
+      <ion-button class="header-icon-button" fill="clear" aria-label="Notificaciones"><ion-icon name="notifications-outline"></ion-icon></ion-button>
       <div class="header-avatar" [routerLink]="'/profile'">J</div>
     </div>
   </ion-toolbar></ion-header>`

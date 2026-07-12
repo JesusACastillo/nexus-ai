@@ -70,20 +70,28 @@ ion-toolbar {
 }
 .header-actions ion-button {
   --color: var(--nexus-muted-2);
-  --border-radius: 10px;
   --background: transparent;
   --background-hover: rgba(255,255,255,.06);
-  width: 40px;
-  height: 40px;
 }
 /* Back button (chevron) */
 .back-btn {
   --color: var(--nexus-muted-2);
-  --border-radius: 10px;
   --background: rgba(255,255,255,.06);
-  width: 38px;
-  height: 38px;
   margin-right: 4px;
+}
+
+/* Header icon buttons (bigger tap target) */
+.header-icon-button {
+  --border-radius: 14px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.header-icon-button ion-icon {
+  font-size: 20px;
 }
 
 /* ════════════════════════════════════════════════════════════════════════
